@@ -47,18 +47,31 @@
 				</div><!-- .site-branding -->
 			
 				<nav id="site-navigation" class="main-navigation" role="navigation">
-					<?php
 
-						wp_nav_menu(
+					<div class="main-nav-menu">
+
+						<?php wp_nav_menu(
 							array(
 								'theme_location' 		=> 	'primary',
 								'menu_id' 				=> 	'primary-menu',
 								'menu_class' 			=> 	'main-header-menu',
 								'container_class'		=>	'main-menu-container'
 							)
-						);
+						); ?>
 
-						?>
+					</div><!-- .main-nav-menu -->		
+					<div class="main-nav-extra">
+
+						<div class="main-nav-acc">
+							<a href="<?php echo get_permalink( get_option('woocommerce_myaccount_page_id') ); ?>"><i class="icon-user"></i></a>
+						</div><!-- .main-nav-acc -->
+
+						<div class="main-nav-cart">
+							<?php echo do_shortcode("[woo_cart_link]"); ?>
+						</div><!-- .main-nav-cart -->
+
+					</div><!-- .main-nav-extra -->
+
 				</nav><!-- #site-navigation -->
 
 				<div class="menu-toggle-wrapper">

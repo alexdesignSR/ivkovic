@@ -1,7 +1,6 @@
 @font-face {
 	font-family: "font-icons";
-	src: url('../assets/fonts/font-icons/font-icons.woff2') format('woff2'), url('../assets/fonts/font-icons/font-icons.woff') format('woff'), url('../assets/fonts/font-icons/font-icons.ttf') format('truetype');
-	font-display: swap;
+	src: url('../assets/fonts/font-icons/font-icons.woff2') format('woff2'), url('../assets/fonts/font-icons/font-icons.woff') format('woff'), url('../assets/fonts/font-icons/font-icons.ttf') format('truetype');;
 }
 
 @mixin icon-styles {
@@ -35,6 +34,36 @@
 	@if $filename == angle-up {
 		$char: "\E004";
 	}
+	@if $filename == cart {
+		$char: "\E005";
+	}
+	@if $filename == facebook {
+		$char: "\E006";
+	}
+	@if $filename == google-plus-g {
+		$char: "\E007";
+	}
+	@if $filename == instagram {
+		$char: "\E008";
+	}
+	@if $filename == linkedin {
+		$char: "\E009";
+	}
+	@if $filename == pinterest {
+		$char: "\E00A";
+	}
+	@if $filename == search {
+		$char: "\E00B";
+	}
+	@if $filename == twitter {
+		$char: "\E00C";
+	}
+	@if $filename == user {
+		$char: "\E00D";
+	}
+	@if $filename == youtube {
+		$char: "\E00E";
+	}
 
 	@return $char;
 }
@@ -62,4 +91,34 @@
 .icon-angle-up {
 	@include icon(angle-up);
 }
-
+.icon-cart {
+	@include icon(cart);
+}
+.icon-facebook {
+	@include icon(facebook);
+}
+.icon-google-plus-g {
+	@include icon(google-plus-g);
+}
+.icon-instagram {
+	@include icon(instagram);
+}
+.icon-linkedin {
+	@include icon(linkedin);
+}
+.icon-pinterest {
+	@include icon(pinterest);
+}
+.icon-search {
+	@include icon(search);
+}
+.icon-twitter {
+	@include icon(twitter);
+}
+.icon-user {
+	@include icon(user);
+}
+.icon-youtube {
+	@include icon(youtube);
+}
+
