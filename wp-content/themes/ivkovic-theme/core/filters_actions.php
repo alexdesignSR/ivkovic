@@ -371,6 +371,8 @@ if (!function_exists('after_setup_theme_function')):
 		register_nav_menus(
 			array(
 				'primary' => esc_html__( 'Primary Menu', 'ivkovic' ),
+                'footer' => esc_html__( 'Footer Menu', 'ivkovic' ),
+                'mega-menu-products' => esc_html__( 'Mega Menu Products', 'ivkovic' ),
 			)
 		);
 

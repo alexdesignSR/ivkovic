@@ -161,13 +161,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 
 		};
-	}, { "../site/global": 4 }], 2: [function (require, module, exports) {
+	}, { "../site/global": 3 }], 2: [function (require, module, exports) {
 		'use strict';
 
 		$ = require('jquery');
 
 		var Navigation = require('./core/navigation');
-		var example = require('./site/example');
+		var Slick = require('./site/slick');
+		var Like = require('./site/like');
 
 		jQuery(function () {
 
@@ -177,37 +178,16 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			Navigation.init();
 
 			/**
-    * Initialize sample module
+    * Initialize slick
     */
-			example.init();
+			Slick.init();
+
+			/**
+    * Initialize like module
+    */
+			Like.init();
 		});
-	}, { "./core/navigation": 1, "./site/example": 3, "jquery": 5 }], 3: [function (require, module, exports) {
-		"use strict";
-
-		// const Global = require('./global');
-
-		// let	_this;
-
-		var _this = module.exports = {
-
-			/*-------------------------------------------------------------------------------
-   	# Cache dom and strings
-   -------------------------------------------------------------------------------*/
-			$dom: {
-				body: $('body')
-			},
-
-			vars: {},
-
-			/*-------------------------------------------------------------------------------
-   	# Initialize
-   -------------------------------------------------------------------------------*/
-			init: function init() {
-				if (_this) {}
-			}
-
-		};
-	}, {}], 4: [function (require, module, exports) {
+	}, { "./core/navigation": 1, "./site/like": 4, "./site/slick": 5, "jquery": 6 }], 3: [function (require, module, exports) {
 		// "use strict";
 		var Global = module.exports = {
 
@@ -358,19 +338,131 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		};
 
 		Global.privateFunctions.init();
+	}, {}], 4: [function (require, module, exports) {
+		"use strict";
+
+		// const Global = require('./global');
+
+		// let	_this;
+
+		var _this = module.exports = {
+
+			/*-------------------------------------------------------------------------------
+   	# Cache dom and strings
+   -------------------------------------------------------------------------------*/
+			$dom: {
+				body: $('body'),
+				likeButton: $('.post-item-like i')
+			},
+
+			vars: {},
+
+			bind: function bind() {
+				_this.$dom.likeButton.on('click', _this.like);
+			},
+
+			like: function like() {
+				var thisEl = $(this);
+				var postId = thisEl.data('id');
+
+				if (postId) {
+					$.ajax({
+						url: theme.ajaxurl,
+						type: 'POST',
+						dataType: 'HTML',
+						data: {
+							action: 'ajax_post_like',
+							post_id: postId
+						}
+					}).done(function (data) {
+						if (thisEl.hasClass('icon-heart-empty')) {
+							thisEl.removeClass('icon-heart-empty').addClass('icon-heart');
+						} else {
+							thisEl.addClass('icon-heart-empty').removeClass('icon-heart');
+						}
+					});
+				}
+			},
+
+			/*-------------------------------------------------------------------------------
+   	# Initialize
+   -------------------------------------------------------------------------------*/
+			init: function init() {
+				_this.bind();
+			}
+
+		};
 	}, {}], 5: [function (require, module, exports) {
+		"use strict";
+
+		/**  
+   * 1. Add [ "slick-carousel": "1.8.1" ], to package.json
+   * 2. npm install
+   * 3. Import slick scss file in assets/scss/plugins/slick.scss => @import "../../../node_modules/slick-carousel/slick/slick.scss";
+   * 4. Add require('slick-carousel');
+   * 5. Initialize slick
+   * 
+  */
+
+		require('slick-carousel');
+
+		module.exports = {
+
+			/*-------------------------------------------------------------------------------
+   	# Cache dom and strings
+   -------------------------------------------------------------------------------*/
+			$dom: {
+				homeHero: $(".home-hero-slider"),
+				catalSlider: $('.catal-slider-slider'),
+				testimonials: $('.tst-items')
+			},
+
+			/*-------------------------------------------------------------------------------
+   	# Initialize
+   -------------------------------------------------------------------------------*/
+			init: function init() {
+
+				this.$dom.homeHero.slick({
+					slidesToScroll: 1,
+					slidesToShow: 1,
+					dots: false,
+					arrows: true,
+					prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
+					nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>"
+				});
+
+				this.$dom.catalSlider.slick({
+					slidesToScroll: 1,
+					slidesToShow: 1,
+					dots: false,
+					arrows: true,
+					prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
+					nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>"
+				});
+
+				this.$dom.testimonials.slick({
+					slidesToScroll: 3,
+					slidesToShow: 3,
+					dots: false,
+					arrows: true,
+					prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
+					nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>"
+				});
+			}
+		};
+	}, { "slick-carousel": 7 }], 6: [function (require, module, exports) {
 		/*!
-   * jQuery JavaScript Library v3.6.0
+   * jQuery JavaScript Library v3.4.1
    * https://jquery.com/
    *
    * Includes Sizzle.js
    * https://sizzlejs.com/
    *
-   * Copyright OpenJS Foundation and other contributors
+   * Copyright JS Foundation and other contributors
    * Released under the MIT license
    * https://jquery.org/license
    *
-   * Date: 2021-03-02T17:08Z
+   * Date: 2019-05-01T21:04Z
    */
 		(function (global, factory) {
 
@@ -406,15 +498,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			var arr = [];
 
+			var document = window.document;
+
 			var getProto = Object.getPrototypeOf;
 
 			var _slice = arr.slice;
 
-			var flat = arr.flat ? function (array) {
-				return arr.flat.call(array);
-			} : function (array) {
-				return arr.concat.apply([], array);
-			};
+			var concat = arr.concat;
 
 			var push = arr.push;
 
@@ -438,17 +528,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				// In some browsers, typeof returns "function" for HTML <object> elements
 				// (i.e., `typeof document.createElement( "object" ) === "function"`).
 				// We don't want to classify *any* DOM node as a function.
-				// Support: QtWeb <=3.8.5, WebKit <=534.34, wkhtmltopdf tool <=0.12.5
-				// Plus for old WebKit, typeof returns "function" for HTML collections
-				// (e.g., `typeof document.getElementsByTagName("div") === "function"`). (gh-4756)
-				return typeof obj === "function" && typeof obj.nodeType !== "number" && typeof obj.item !== "function";
+				return typeof obj === "function" && typeof obj.nodeType !== "number";
 			};
 
 			var isWindow = function isWindow(obj) {
 				return obj != null && obj === obj.window;
 			};
-
-			var document = window.document;
 
 			var preservedScriptAttributes = {
 				type: true,
@@ -500,7 +585,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			// unguarded in another place, it seems safer to define global only for this module
 
 
-			var version = "3.6.0",
+			var version = "3.4.1",
 
 
 			// Define a local copy of jQuery
@@ -509,7 +594,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				// The jQuery object is actually just the init constructor 'enhanced'
 				// Need init if jQuery is called (just allow error to be thrown if not included)
 				return new jQuery.fn.init(selector, context);
-			};
+			},
+
+
+			// Support: Android <=4.0 only
+			// Make sure we trim BOM and NBSP
+			rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 
 			jQuery.fn = jQuery.prototype = {
 
@@ -573,18 +663,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 				last: function last() {
 					return this.eq(-1);
-				},
-
-				even: function even() {
-					return this.pushStack(jQuery.grep(this, function (_elem, i) {
-						return (i + 1) % 2;
-					}));
-				},
-
-				odd: function odd() {
-					return this.pushStack(jQuery.grep(this, function (_elem, i) {
-						return i % 2;
-					}));
 				},
 
 				eq: function eq(i) {
@@ -724,10 +802,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					return true;
 				},
 
-				// Evaluates a script in a provided context; falls back to the global one
-				// if not specified.
-				globalEval: function globalEval(code, options, doc) {
-					DOMEval(code, { nonce: options && options.nonce }, doc);
+				// Evaluates a script in a global context
+				globalEval: function globalEval(code, options) {
+					DOMEval(code, { nonce: options && options.nonce });
 				},
 
 				each: function each(obj, callback) {
@@ -750,6 +827,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					}
 
 					return obj;
+				},
+
+				// Support: Android <=4.0 only
+				trim: function trim(text) {
+					return text == null ? "" : (text + "").replace(rtrim, "");
 				},
 
 				// results is for internal usage only
@@ -836,7 +918,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					}
 
 					// Flatten any nested arrays
-					return flat(ret);
+					return concat.apply([], ret);
 				},
 
 				// A global GUID counter for objects
@@ -852,7 +934,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 
 			// Populate the class2type map
-			jQuery.each("Boolean Number String Function Array Date RegExp Object Error Symbol".split(" "), function (_i, name) {
+			jQuery.each("Boolean Number String Function Array Date RegExp Object Error Symbol".split(" "), function (i, name) {
 				class2type["[object " + name + "]"] = name.toLowerCase();
 			});
 
@@ -873,16 +955,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 			var Sizzle =
 			/*!
-    * Sizzle CSS Selector Engine v2.3.6
+    * Sizzle CSS Selector Engine v2.3.4
     * https://sizzlejs.com/
     *
     * Copyright JS Foundation and other contributors
     * Released under the MIT license
     * https://js.foundation/
     *
-    * Date: 2021-02-16
+    * Date: 2019-04-08
     */
 			function (window) {
+
 				var i,
 				    support,
 				    Expr,
@@ -928,10 +1011,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				hasOwn = {}.hasOwnProperty,
 				    arr = [],
 				    pop = arr.pop,
-				    pushNative = arr.push,
+				    push_native = arr.push,
 				    push = arr.push,
 				    slice = arr.slice,
-
 
 				// Use a stripped-down indexOf as it's faster than native
 				// https://jsperf.com/thor-indexof-vs-for/5
@@ -945,7 +1027,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					}
 					return -1;
 				},
-				    booleans = "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|" + "ismap|loop|multiple|open|readonly|required|scoped",
+				    booleans = "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",
 
 
 				// Regular expressions
@@ -954,28 +1036,22 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				whitespace = "[\\x20\\t\\r\\n\\f]",
 
 
-				// https://www.w3.org/TR/css-syntax-3/#ident-token-diagram
-				identifier = "(?:\\\\[\\da-fA-F]{1,6}" + whitespace + "?|\\\\[^\\r\\n\\f]|[\\w-]|[^\0-\\x7f])+",
+				// http://www.w3.org/TR/CSS21/syndata.html#value-def-identifier
+				identifier = "(?:\\\\.|[\\w-]|[^\0-\\xa0])+",
 
 
 				// Attribute selectors: http://www.w3.org/TR/selectors/#attribute-selectors
 				attributes = "\\[" + whitespace + "*(" + identifier + ")(?:" + whitespace +
-
 				// Operator (capture 2)
 				"*([*^$|!~]?=)" + whitespace +
-
-				// "Attribute values must be CSS identifiers [capture 5]
-				// or strings [capture 3 or capture 4]"
+				// "Attribute values must be CSS identifiers [capture 5] or strings [capture 3 or capture 4]"
 				"*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|(" + identifier + "))|)" + whitespace + "*\\]",
 				    pseudos = ":(" + identifier + ")(?:\\((" +
-
 				// To reduce the number of selectors needing tokenize in the preFilter, prefer arguments:
 				// 1. quoted (capture 3; capture 4 or capture 5)
 				"('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|" +
-
 				// 2. simple (capture 6)
 				"((?:\\\\.|[^\\\\()[\\]]|" + attributes + ")*)|" +
-
 				// 3. anything else (capture 2)
 				".*" + ")\\)|)",
 
@@ -996,7 +1072,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					"PSEUDO": new RegExp("^" + pseudos),
 					"CHILD": new RegExp("^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(" + whitespace + "*(even|odd|(([+-]|)(\\d*)n|)" + whitespace + "*(?:([+-]|)" + whitespace + "*(\\d+)|))" + whitespace + "*\\)|)", "i"),
 					"bool": new RegExp("^(?:" + booleans + ")$", "i"),
-
 					// For use in libraries implementing .is()
 					// We use this for POS matching in `select`
 					"needsContext": new RegExp("^" + whitespace + "*[>+~]|:(even|odd|eq|gt|lt|nth|first|last)(?:\\(" + whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", "i")
@@ -1014,20 +1089,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 				// CSS escapes
 				// http://www.w3.org/TR/CSS21/syndata.html#escaped-characters
-				runescape = new RegExp("\\\\[\\da-fA-F]{1,6}" + whitespace + "?|\\\\([^\\r\\n\\f])", "g"),
-				    funescape = function funescape(escape, nonHex) {
-					var high = "0x" + escape.slice(1) - 0x10000;
-
-					return nonHex ?
-
-					// Strip the backslash prefix from a non-hex escape sequence
-					nonHex :
-
-					// Replace a hexadecimal escape sequence with the encoded Unicode code point
-					// Support: IE <=11+
-					// For values outside the Basic Multilingual Plane (BMP), manually construct a
-					// surrogate pair
-					high < 0 ? String.fromCharCode(high + 0x10000) : String.fromCharCode(high >> 10 | 0xD800, high & 0x3FF | 0xDC00);
+				runescape = new RegExp("\\\\([\\da-f]{1,6}" + whitespace + "?|(" + whitespace + ")|.)", "ig"),
+				    funescape = function funescape(_, escaped, escapedWhitespace) {
+					var high = "0x" + escaped - 0x10000;
+					// NaN means non-codepoint
+					// Support: Firefox<24
+					// Workaround erroneous numeric interpretation of +"0x"
+					return high !== high || escapedWhitespace ? escaped : high < 0 ?
+					// BMP codepoint
+					String.fromCharCode(high + 0x10000) :
+					// Supplemental Plane codepoint (surrogate pair)
+					String.fromCharCode(high >> 10 | 0xD800, high & 0x3FF | 0xDC00);
 				},
 
 
@@ -1065,17 +1137,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				// Optimize for push.apply( _, NodeList )
 				try {
 					push.apply(arr = slice.call(preferredDoc.childNodes), preferredDoc.childNodes);
-
 					// Support: Android<4.0
 					// Detect silently failing push.apply
-					// eslint-disable-next-line no-unused-expressions
 					arr[preferredDoc.childNodes.length].nodeType;
 				} catch (e) {
 					push = { apply: arr.length ?
 
 						// Leverage slice if possible
 						function (target, els) {
-							pushNative.apply(target, slice.call(els));
+							push_native.apply(target, slice.call(els));
 						} :
 
 						// Support: IE<9
@@ -1083,7 +1153,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						function (target, els) {
 							var j = target.length,
 							    i = 0;
-
 							// Can't trust NodeList.length
 							while (target[j++] = els[i++]) {}
 							target.length = j - 1;
@@ -1115,7 +1184,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 					// Try to shortcut find operations (as opposed to filters) in HTML documents
 					if (!seed) {
-						setDocument(context);
+
+						if ((context ? context.ownerDocument || context : preferredDoc) !== document) {
+							setDocument(context);
+						}
 						context = context || document;
 
 						if (documentIsHTML) {
@@ -1182,33 +1254,26 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 								// descendant combinators, which is not what we want.
 								// In such cases, we work around the behavior by prefixing every selector in the
 								// list with an ID selector referencing the scope context.
-								// The technique has to be used as well when a leading combinator is used
-								// as such selectors are not recognized by querySelectorAll.
 								// Thanks to Andrew Dupont for this technique.
-								if (nodeType === 1 && (rdescend.test(selector) || rcombinators.test(selector))) {
+								if (nodeType === 1 && rdescend.test(selector)) {
 
-									// Expand context for sibling selectors
-									newContext = rsibling.test(selector) && testContext(context.parentNode) || context;
-
-									// We can use :scope instead of the ID hack if the browser
-									// supports it & if we're not changing the context.
-									if (newContext !== context || !support.scope) {
-
-										// Capture the context ID, setting it first if necessary
-										if (nid = context.getAttribute("id")) {
-											nid = nid.replace(rcssescape, fcssescape);
-										} else {
-											context.setAttribute("id", nid = expando);
-										}
+									// Capture the context ID, setting it first if necessary
+									if (nid = context.getAttribute("id")) {
+										nid = nid.replace(rcssescape, fcssescape);
+									} else {
+										context.setAttribute("id", nid = expando);
 									}
 
 									// Prefix every selector in the list
 									groups = tokenize(selector);
 									i = groups.length;
 									while (i--) {
-										groups[i] = (nid ? "#" + nid : ":scope") + " " + toSelector(groups[i]);
+										groups[i] = "#" + nid + " " + toSelector(groups[i]);
 									}
 									newSelector = groups.join(",");
+
+									// Expand context for sibling selectors
+									newContext = rsibling.test(selector) && testContext(context.parentNode) || context;
 								}
 
 								try {
@@ -1239,10 +1304,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					var keys = [];
 
 					function cache(key, value) {
-
 						// Use (key + " ") to avoid collision with native prototype properties (see Issue #157)
 						if (keys.push(key + " ") > Expr.cacheLength) {
-
 							// Only keep the most recent entries
 							delete cache[keys.shift()];
 						}
@@ -1272,12 +1335,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					} catch (e) {
 						return false;
 					} finally {
-
 						// Remove from its parent by default
 						if (el.parentNode) {
 							el.parentNode.removeChild(el);
 						}
-
 						// release memory in IE
 						el = null;
 					}
@@ -1441,8 +1502,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
      * @returns {Boolean} True iff elem is a non-HTML XML node
      */
 				isXML = Sizzle.isXML = function (elem) {
-					var namespace = elem && elem.namespaceURI,
-					    docElem = elem && (elem.ownerDocument || elem).documentElement;
+					var namespace = elem.namespaceURI,
+					    docElem = (elem.ownerDocument || elem).documentElement;
 
 					// Support: IE <=8
 					// Assume HTML when documentElement doesn't yet exist, such as inside loading iframes
@@ -1461,11 +1522,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					    doc = node ? node.ownerDocument || node : preferredDoc;
 
 					// Return early if doc is invalid or already selected
-					// Support: IE 11+, Edge 17 - 18+
-					// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-					// two documents; shallow comparisons work.
-					// eslint-disable-next-line eqeqeq
-					if (doc == document || doc.nodeType !== 9 || !doc.documentElement) {
+					if (doc === document || doc.nodeType !== 9 || !doc.documentElement) {
 						return document;
 					}
 
@@ -1474,13 +1531,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					docElem = document.documentElement;
 					documentIsHTML = !isXML(document);
 
-					// Support: IE 9 - 11+, Edge 12 - 18+
+					// Support: IE 9-11, Edge
 					// Accessing iframe documents after unload throws "permission denied" errors (jQuery #13936)
-					// Support: IE 11+, Edge 17 - 18+
-					// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-					// two documents; shallow comparisons work.
-					// eslint-disable-next-line eqeqeq
-					if (preferredDoc != document && (subWindow = document.defaultView) && subWindow.top !== subWindow) {
+					if (preferredDoc !== document && (subWindow = document.defaultView) && subWindow.top !== subWindow) {
 
 						// Support: IE 11, Edge
 						if (subWindow.addEventListener) {
@@ -1491,16 +1544,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							subWindow.attachEvent("onunload", unloadHandler);
 						}
 					}
-
-					// Support: IE 8 - 11+, Edge 12 - 18+, Chrome <=16 - 25 only, Firefox <=3.6 - 31 only,
-					// Safari 4 - 5 only, Opera <=11.6 - 12.x only
-					// IE/Edge & older browsers don't support the :scope pseudo-class.
-					// Support: Safari 6.0 only
-					// Safari 6.0 supports :scope but it's an alias of :root there.
-					support.scope = assert(function (el) {
-						docElem.appendChild(el).appendChild(document.createElement("div"));
-						return typeof el.querySelectorAll !== "undefined" && !el.querySelectorAll(":scope fieldset div").length;
-					});
 
 					/* Attributes
      ---------------------------------------------------------------------- */
@@ -1604,7 +1647,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						    tmp = [],
 						    i = 0,
 
-
 						// By happy coincidence, a (broken) gEBTN appears on DocumentFragment nodes too
 						results = context.getElementsByTagName(tag);
 
@@ -1644,13 +1686,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					rbuggyQSA = [];
 
 					if (support.qsa = rnative.test(document.querySelectorAll)) {
-
 						// Build QSA regex
 						// Regex strategy adopted from Diego Perini
 						assert(function (el) {
-
-							var input;
-
 							// Select is set to empty string on purpose
 							// This is to test IE's treatment of not explicitly
 							// setting a boolean content attribute,
@@ -1677,18 +1715,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 								rbuggyQSA.push("~=");
 							}
 
-							// Support: IE 11+, Edge 15 - 18+
-							// IE 11/Edge don't find elements on a `[name='']` query in some cases.
-							// Adding a temporary attribute to the document before the selection works
-							// around the issue.
-							// Interestingly, IE 10 & older don't seem to have the issue.
-							input = document.createElement("input");
-							input.setAttribute("name", "");
-							el.appendChild(input);
-							if (!el.querySelectorAll("[name='']").length) {
-								rbuggyQSA.push("\\[" + whitespace + "*name" + whitespace + "*=" + whitespace + "*(?:''|\"\")");
-							}
-
 							// Webkit/Opera - :checked should return selected option elements
 							// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
 							// IE8 throws error here and will not see later tests
@@ -1702,11 +1728,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							if (!el.querySelectorAll("a#" + expando + "+*").length) {
 								rbuggyQSA.push(".#.+[+~]");
 							}
-
-							// Support: Firefox <=3.6 - 5 only
-							// Old Firefox doesn't throw on a badly-escaped identifier.
-							el.querySelectorAll("\\\f");
-							rbuggyQSA.push("[\\r\\n\\f]");
 						});
 
 						assert(function (el) {
@@ -1737,7 +1758,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 								rbuggyQSA.push(":enabled", ":disabled");
 							}
 
-							// Support: Opera 10 - 11 only
 							// Opera 10-11 does not throw on post-comma invalid pseudos
 							el.querySelectorAll("*,:x");
 							rbuggyQSA.push(",.*:");
@@ -1747,7 +1767,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					if (support.matchesSelector = rnative.test(matches = docElem.matches || docElem.webkitMatchesSelector || docElem.mozMatchesSelector || docElem.oMatchesSelector || docElem.msMatchesSelector)) {
 
 						assert(function (el) {
-
 							// Check to see if it's possible to do matchesSelector
 							// on a disconnected node (IE 9)
 							support.disconnectedMatch = matches.call(el, "*");
@@ -1803,11 +1822,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						}
 
 						// Calculate position if both inputs belong to the same document
-						// Support: IE 11+, Edge 17 - 18+
-						// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-						// two documents; shallow comparisons work.
-						// eslint-disable-next-line eqeqeq
-						compare = (a.ownerDocument || a) == (b.ownerDocument || b) ? a.compareDocumentPosition(b) :
+						compare = (a.ownerDocument || a) === (b.ownerDocument || b) ? a.compareDocumentPosition(b) :
 
 						// Otherwise we know they are disconnected
 						1;
@@ -1816,19 +1831,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						if (compare & 1 || !support.sortDetached && b.compareDocumentPosition(a) === compare) {
 
 							// Choose the first element that is related to our preferred document
-							// Support: IE 11+, Edge 17 - 18+
-							// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-							// two documents; shallow comparisons work.
-							// eslint-disable-next-line eqeqeq
-							if (a == document || a.ownerDocument == preferredDoc && contains(preferredDoc, a)) {
+							if (a === document || a.ownerDocument === preferredDoc && contains(preferredDoc, a)) {
 								return -1;
 							}
-
-							// Support: IE 11+, Edge 17 - 18+
-							// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-							// two documents; shallow comparisons work.
-							// eslint-disable-next-line eqeqeq
-							if (b == document || b.ownerDocument == preferredDoc && contains(preferredDoc, b)) {
+							if (b === document || b.ownerDocument === preferredDoc && contains(preferredDoc, b)) {
 								return 1;
 							}
 
@@ -1838,7 +1844,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 						return compare & 4 ? -1 : 1;
 					} : function (a, b) {
-
 						// Exit early if the nodes are identical
 						if (a === b) {
 							hasDuplicate = true;
@@ -1854,14 +1859,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 						// Parentless nodes are either documents or disconnected
 						if (!aup || !bup) {
-
-							// Support: IE 11+, Edge 17 - 18+
-							// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-							// two documents; shallow comparisons work.
-							/* eslint-disable eqeqeq */
-							return a == document ? -1 : b == document ? 1 :
-							/* eslint-enable eqeqeq */
-							aup ? -1 : bup ? 1 : sortInput ? indexOf(sortInput, a) - indexOf(sortInput, b) : 0;
+							return a === document ? -1 : b === document ? 1 : aup ? -1 : bup ? 1 : sortInput ? indexOf(sortInput, a) - indexOf(sortInput, b) : 0;
 
 							// If the nodes are siblings, we can do a quick check
 						} else if (aup === bup) {
@@ -1884,18 +1882,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						}
 
 						return i ?
-
 						// Do a sibling check if the nodes have a common ancestor
 						siblingCheck(ap[i], bp[i]) :
 
 						// Otherwise nodes in our document sort first
-						// Support: IE 11+, Edge 17 - 18+
-						// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-						// two documents; shallow comparisons work.
-						/* eslint-disable eqeqeq */
-						ap[i] == preferredDoc ? -1 : bp[i] == preferredDoc ? 1 :
-						/* eslint-enable eqeqeq */
-						0;
+						ap[i] === preferredDoc ? -1 : bp[i] === preferredDoc ? 1 : 0;
 					};
 
 					return document;
@@ -1906,7 +1897,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				};
 
 				Sizzle.matchesSelector = function (elem, expr) {
-					setDocument(elem);
+					// Set document vars if needed
+					if ((elem.ownerDocument || elem) !== document) {
+						setDocument(elem);
+					}
 
 					if (support.matchesSelector && documentIsHTML && !nonnativeSelectorCache[expr + " "] && (!rbuggyMatches || !rbuggyMatches.test(expr)) && (!rbuggyQSA || !rbuggyQSA.test(expr))) {
 
@@ -1915,7 +1909,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 							// IE 9's matchesSelector returns false on disconnected nodes
 							if (ret || support.disconnectedMatch ||
-
 							// As well, disconnected nodes are said to be in a document
 							// fragment in IE 9
 							elem.document && elem.document.nodeType !== 11) {
@@ -1930,31 +1923,20 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				};
 
 				Sizzle.contains = function (context, elem) {
-
 					// Set document vars if needed
-					// Support: IE 11+, Edge 17 - 18+
-					// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-					// two documents; shallow comparisons work.
-					// eslint-disable-next-line eqeqeq
-					if ((context.ownerDocument || context) != document) {
+					if ((context.ownerDocument || context) !== document) {
 						setDocument(context);
 					}
 					return contains(context, elem);
 				};
 
 				Sizzle.attr = function (elem, name) {
-
 					// Set document vars if needed
-					// Support: IE 11+, Edge 17 - 18+
-					// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-					// two documents; shallow comparisons work.
-					// eslint-disable-next-line eqeqeq
-					if ((elem.ownerDocument || elem) != document) {
+					if ((elem.ownerDocument || elem) !== document) {
 						setDocument(elem);
 					}
 
 					var fn = Expr.attrHandle[name.toLowerCase()],
-
 
 					// Don't get fooled by Object.prototype properties (jQuery #13807)
 					val = fn && hasOwn.call(Expr.attrHandle, name.toLowerCase()) ? fn(elem, name, !documentIsHTML) : undefined;
@@ -2014,21 +1996,17 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					    nodeType = elem.nodeType;
 
 					if (!nodeType) {
-
 						// If no nodeType, this is expected to be an array
 						while (node = elem[i++]) {
-
 							// Do not traverse comment nodes
 							ret += getText(node);
 						}
 					} else if (nodeType === 1 || nodeType === 9 || nodeType === 11) {
-
 						// Use textContent for elements
 						// innerText usage removed for consistency of new lines (jQuery #11153)
 						if (typeof elem.textContent === "string") {
 							return elem.textContent;
 						} else {
-
 							// Traverse its children
 							for (elem = elem.firstChild; elem; elem = elem.nextSibling) {
 								ret += getText(elem);
@@ -2037,7 +2015,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					} else if (nodeType === 3 || nodeType === 4) {
 						return elem.nodeValue;
 					}
-
 					// Do not include comment or processing instruction nodes
 
 					return ret;
@@ -2078,7 +2055,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						},
 
 						"CHILD": function CHILD(match) {
-
 							/* matches from matchExpr["CHILD"]
        	1 type (only|nth|...)
        	2 what (child|of-type)
@@ -2092,7 +2068,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							match[1] = match[1].toLowerCase();
 
 							if (match[1].slice(0, 3) === "nth") {
-
 								// nth-* requires argument
 								if (!match[3]) {
 									Sizzle.error(match[0]);
@@ -2125,10 +2100,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 								// Strip excess characters from unquoted arguments
 							} else if (unquoted && rpseudo.test(unquoted) && (
-
 							// Get excess from tokenize (recursively)
 							excess = tokenize(unquoted, true)) && (
-
 							// advance to the next closing parenthesis
 							excess = unquoted.indexOf(")", unquoted.length - excess) - unquoted.length)) {
 
@@ -2174,14 +2147,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 								result += "";
 
-								/* eslint-disable max-len */
-
 								return operator === "=" ? result === check : operator === "!=" ? result !== check : operator === "^=" ? check && result.indexOf(check) === 0 : operator === "*=" ? check && result.indexOf(check) > -1 : operator === "$=" ? check && result.slice(-check.length) === check : operator === "~=" ? (" " + result.replace(rwhitespace, " ") + " ").indexOf(check) > -1 : operator === "|=" ? result === check || result.slice(0, check.length + 1) === check + "-" : false;
-								/* eslint-enable max-len */
 							};
 						},
 
-						"CHILD": function CHILD(type, what, _argument, first, last) {
+						"CHILD": function CHILD(type, what, argument, first, last) {
 							var simple = type.slice(0, 3) !== "nth",
 							    forward = type.slice(-4) !== "last",
 							    ofType = what === "of-type";
@@ -2191,7 +2161,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							// Shortcut for :nth-*(n)
 							function (elem) {
 								return !!elem.parentNode;
-							} : function (elem, _context, xml) {
+							} : function (elem, context, xml) {
 								var cache,
 								    uniqueCache,
 								    outerCache,
@@ -2216,7 +2186,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 													return false;
 												}
 											}
-
 											// Reverse direction for :only-* (if we haven't yet done so)
 											start = dir = type === "only" && !start && "nextSibling";
 										}
@@ -2255,10 +2224,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 											}
 										}
 									} else {
-
 										// Use previously-cached element index if available
 										if (useCache) {
-
 											// ...in a gzip-friendly way
 											node = elem;
 											outerCache = node[expando] || (node[expando] = {});
@@ -2275,7 +2242,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 										// xml :nth-child(...)
 										// or :nth-last-child(...) or :nth(-last)?-of-type(...)
 										if (diff === false) {
-
 											// Use the same loop as above to seek `elem` from the start
 											while (node = ++nodeIndex && node && node[dir] || (diff = nodeIndex = 0) || start.pop()) {
 
@@ -2308,7 +2274,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						},
 
 						"PSEUDO": function PSEUDO(pseudo, argument) {
-
 							// pseudo-class names are case-insensitive
 							// http://www.w3.org/TR/selectors/#pseudo-classes
 							// Prioritize by case sensitivity in case custom pseudos are added with uppercase letters
@@ -2344,10 +2309,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					},
 
 					pseudos: {
-
 						// Potentially complex pseudos
 						"not": markFunction(function (selector) {
-
 							// Trim the selector passed to compile
 							// to avoid treating leading and trailing
 							// spaces as combinators
@@ -2355,7 +2318,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							    results = [],
 							    matcher = compile(selector.replace(rtrim, "$1"));
 
-							return matcher[expando] ? markFunction(function (seed, matches, _context, xml) {
+							return matcher[expando] ? markFunction(function (seed, matches, context, xml) {
 								var elem,
 								    unmatched = matcher(seed, null, xml, []),
 								    i = seed.length;
@@ -2366,10 +2329,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 										seed[i] = !(matches[i] = elem);
 									}
 								}
-							}) : function (elem, _context, xml) {
+							}) : function (elem, context, xml) {
 								input[0] = elem;
 								matcher(input, null, xml, results);
-
 								// Don't keep the element (issue #299)
 								input[0] = null;
 								return !results.pop();
@@ -2397,7 +2359,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						// The identifier C does not have to be a valid language name."
 						// http://www.w3.org/TR/selectors/#lang-pseudo
 						"lang": markFunction(function (lang) {
-
 							// lang value must be a valid identifier
 							if (!ridentifier.test(lang || "")) {
 								Sizzle.error("unsupported lang: " + lang);
@@ -2435,7 +2396,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						"disabled": createDisabledPseudo(true),
 
 						"checked": function checked(elem) {
-
 							// In CSS3, :checked should return both checked and selected elements
 							// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
 							var nodeName = elem.nodeName.toLowerCase();
@@ -2443,11 +2403,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						},
 
 						"selected": function selected(elem) {
-
 							// Accessing this property makes selected-by-default
 							// options in Safari work properly
 							if (elem.parentNode) {
-								// eslint-disable-next-line no-unused-expressions
 								elem.parentNode.selectedIndex;
 							}
 
@@ -2456,7 +2414,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 						// Contents
 						"empty": function empty(elem) {
-
 							// http://www.w3.org/TR/selectors/#empty-pseudo
 							// :empty is negated by element (1) or content nodes (text: 3; cdata: 4; entity ref: 5),
 							//   but not by others (comment: 8; processing instruction: 7; etc.)
@@ -2501,11 +2458,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							return [0];
 						}),
 
-						"last": createPositionalPseudo(function (_matchIndexes, length) {
+						"last": createPositionalPseudo(function (matchIndexes, length) {
 							return [length - 1];
 						}),
 
-						"eq": createPositionalPseudo(function (_matchIndexes, length, argument) {
+						"eq": createPositionalPseudo(function (matchIndexes, length, argument) {
 							return [argument < 0 ? argument + length : argument];
 						}),
 
@@ -2581,7 +2538,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						// Comma and first run
 						if (!matched || (match = rcomma.exec(soFar))) {
 							if (match) {
-
 								// Don't consume trailing commas as valid
 								soFar = soFar.slice(match[0].length) || soFar;
 							}
@@ -2595,7 +2551,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							matched = match.shift();
 							tokens.push({
 								value: matched,
-
 								// Cast descendant combinators to space
 								type: match[0].replace(rtrim, " ")
 							});
@@ -2624,7 +2579,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					// if we're just parsing
 					// Otherwise, throw an error or return tokens
 					return parseOnly ? soFar.length : soFar ? Sizzle.error(selector) :
-
 					// Cache the tokens
 					tokenCache(selector, groups).slice(0);
 				};
@@ -2647,7 +2601,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					    doneName = done++;
 
 					return combinator.first ?
-
 					// Check against closest ancestor/preceding element
 					function (elem, context, xml) {
 						while (elem = elem[dir]) {
@@ -2690,7 +2643,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 										// Assign to newCache so results back-propagate to previous elements
 										return newCache[2] = oldCache[2];
 									} else {
-
 										// Reuse newcache so results back-propagate to previous elements
 										uniqueCache[key] = newCache;
 
@@ -2771,7 +2723,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						// Prefilter to get matcher input, preserving a map for seed-results synchronization
 						matcherIn = preFilter && (seed || !selector) ? condense(elems, preMap, preFilter, context, xml) : elems,
 						    matcherOut = matcher ?
-
 						// If we have a postFinder, or filtered seed, or non-seed postFilter or preexisting results,
 						postFinder || (seed ? preFilter : preexisting || postFilter) ?
 
@@ -2803,13 +2754,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						if (seed) {
 							if (postFinder || preFilter) {
 								if (postFinder) {
-
 									// Get the final matcherOut by condensing this intermediate into postFinder contexts
 									temp = [];
 									i = matcherOut.length;
 									while (i--) {
 										if (elem = matcherOut[i]) {
-
 											// Restore matcherIn since elem is not yet a final match
 											temp.push(matcherIn[i] = elem);
 										}
@@ -2858,7 +2807,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					}, implicitRelative, true),
 					    matchers = [function (elem, context, xml) {
 						var ret = !leadingRelative && (xml || context !== outermostContext) || ((checkContext = context).nodeType ? matchContext(elem, context, xml) : matchAnyContext(elem, context, xml));
-
 						// Avoid hanging onto element (issue #299)
 						checkContext = null;
 						return ret;
@@ -2872,7 +2820,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 							// Return special upon seeing a positional matcher
 							if (matcher[expando]) {
-
 								// Find the next relative operator (if any) for proper handling
 								j = ++i;
 								for (; j < len; j++) {
@@ -2881,7 +2828,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 									}
 								}
 								return setMatcher(i > 1 && elementMatcher(matchers), i > 1 && toSelector(
-
 								// If the preceding token was a descendant combinator, insert an implicit any-element `*`
 								tokens.slice(0, i - 1).concat({ value: tokens[i - 2].type === " " ? "*" : "" })).replace(rtrim, "$1"), matcher, i < j && matcherFromTokens(tokens.slice(i, j)), j < len && matcherFromTokens(tokens = tokens.slice(j)), j < len && toSelector(tokens));
 							}
@@ -2905,22 +2851,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						    setMatched = [],
 						    contextBackup = outermostContext,
 
-
 						// We must always have either seed elements or outermost context
 						elems = seed || byElement && Expr.find["TAG"]("*", outermost),
-
 
 						// Use integer dirruns iff this is the outermost matcher
 						dirrunsUnique = dirruns += contextBackup == null ? 1 : Math.random() || 0.1,
 						    len = elems.length;
 
 						if (outermost) {
-
-							// Support: IE 11+, Edge 17 - 18+
-							// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-							// two documents; shallow comparisons work.
-							// eslint-disable-next-line eqeqeq
-							outermostContext = context == document || context || outermost;
+							outermostContext = context === document || context || outermost;
 						}
 
 						// Add elements passing elementMatchers directly to results
@@ -2929,12 +2868,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						for (; i !== len && (elem = elems[i]) != null; i++) {
 							if (byElement && elem) {
 								j = 0;
-
-								// Support: IE 11+, Edge 17 - 18+
-								// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-								// two documents; shallow comparisons work.
-								// eslint-disable-next-line eqeqeq
-								if (!context && elem.ownerDocument != document) {
+								if (!context && elem.ownerDocument !== document) {
 									setDocument(elem);
 									xml = !documentIsHTML;
 								}
@@ -2951,7 +2885,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 							// Track unmatched elements for set filters
 							if (bySet) {
-
 								// They will have gone through all possible matchers
 								if (elem = !matcher && elem) {
 									matchedCount--;
@@ -2982,7 +2915,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							}
 
 							if (seed) {
-
 								// Reintegrate element matches to eliminate the need for sorting
 								if (matchedCount > 0) {
 									while (i--) {
@@ -3025,7 +2957,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					    cached = compilerCache[selector + " "];
 
 					if (!cached) {
-
 						// Generate a function of recursive functions that can be used to check each element
 						if (!match) {
 							match = tokenize(selector);
@@ -3099,7 +3030,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 								break;
 							}
 							if (find = Expr.find[type]) {
-
 								// Search, expanding context for leading sibling combinators
 								if (seed = find(token.matches[0].replace(runescape, funescape), rsibling.test(tokens[0].type) && testContext(context.parentNode) || context)) {
 
@@ -3138,7 +3068,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				// Support: Webkit<537.32 - Safari 6.0.3/Chrome 25 (fixed in Chrome 27)
 				// Detached nodes confoundingly follow *each other*
 				support.sortDetached = assert(function (el) {
-
 					// Should return 1, but returns 4 (following)
 					return el.compareDocumentPosition(document.createElement("fieldset")) & 1;
 				});
@@ -3164,7 +3093,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					el.firstChild.setAttribute("value", "");
 					return el.firstChild.getAttribute("value") === "";
 				})) {
-					addHandle("value", function (elem, _name, isXML) {
+					addHandle("value", function (elem, name, isXML) {
 						if (!isXML && elem.nodeName.toLowerCase() === "input") {
 							return elem.defaultValue;
 						}
@@ -3230,7 +3159,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			function nodeName(elem, name) {
 
 				return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
-			}
+			};
 			var rsingleTag = /^<([a-z][^\/\0>:\x20\t\r\n\f]*)[\x20\t\r\n\f]*\/?>(?:<\/\1>|)$/i;
 
 			// Implement the identical functionality for filter and not
@@ -3520,7 +3449,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				parents: function parents(elem) {
 					return dir(elem, "parentNode");
 				},
-				parentsUntil: function parentsUntil(elem, _i, until) {
+				parentsUntil: function parentsUntil(elem, i, until) {
 					return dir(elem, "parentNode", until);
 				},
 				next: function next(elem) {
@@ -3535,10 +3464,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				prevAll: function prevAll(elem) {
 					return dir(elem, "previousSibling");
 				},
-				nextUntil: function nextUntil(elem, _i, until) {
+				nextUntil: function nextUntil(elem, i, until) {
 					return dir(elem, "nextSibling", until);
 				},
-				prevUntil: function prevUntil(elem, _i, until) {
+				prevUntil: function prevUntil(elem, i, until) {
 					return dir(elem, "previousSibling", until);
 				},
 				siblings: function siblings(elem) {
@@ -3548,13 +3477,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					return _siblings(elem.firstChild);
 				},
 				contents: function contents(elem) {
-					if (elem.contentDocument != null &&
-
-					// Support: IE 11+
-					// <object> elements with no `data` attribute has an object
-					// `contentDocument` with a `null` prototype.
-					getProto(elem.contentDocument)) {
-
+					if (typeof elem.contentDocument !== "undefined") {
 						return elem.contentDocument;
 					}
 
@@ -3891,7 +3814,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							var fns = arguments;
 
 							return jQuery.Deferred(function (newDefer) {
-								jQuery.each(tuples, function (_i, tuple) {
+								jQuery.each(tuples, function (i, tuple) {
 
 									// Map tuples (progress, done, fail) to arguments (done, fail, progress)
 									var fn = isFunction(fns[tuple[4]]) && fns[tuple[4]];
@@ -4127,8 +4050,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					    resolveValues = _slice.call(arguments),
 
 
-					// the primary Deferred
-					primary = jQuery.Deferred(),
+					// the master Deferred
+					master = jQuery.Deferred(),
 
 
 					// subordinate callback factory
@@ -4137,28 +4060,28 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							resolveContexts[i] = this;
 							resolveValues[i] = arguments.length > 1 ? _slice.call(arguments) : value;
 							if (! --remaining) {
-								primary.resolveWith(resolveContexts, resolveValues);
+								master.resolveWith(resolveContexts, resolveValues);
 							}
 						};
 					};
 
 					// Single- and empty arguments are adopted like Promise.resolve
 					if (remaining <= 1) {
-						adoptValue(singleValue, primary.done(updateFunc(i)).resolve, primary.reject, !remaining);
+						adoptValue(singleValue, master.done(updateFunc(i)).resolve, master.reject, !remaining);
 
 						// Use .then() to unwrap secondary thenables (cf. gh-3000)
-						if (primary.state() === "pending" || isFunction(resolveValues[i] && resolveValues[i].then)) {
+						if (master.state() === "pending" || isFunction(resolveValues[i] && resolveValues[i].then)) {
 
-							return primary.then();
+							return master.then();
 						}
 					}
 
 					// Multiple arguments are aggregated like Promise.all array elements
 					while (i--) {
-						adoptValue(resolveValues[i], updateFunc(i), primary.reject);
+						adoptValue(resolveValues[i], updateFunc(i), master.reject);
 					}
 
-					return primary.promise();
+					return master.promise();
 				}
 			});
 
@@ -4286,7 +4209,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							// ...except when executing function values
 						} else {
 							bulk = fn;
-							fn = function fn(elem, _key, value) {
+							fn = function fn(elem, key, value) {
 								return bulk.call(jQuery(elem), value);
 							};
 						}
@@ -4316,7 +4239,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			    rdashAlpha = /-([a-z])/g;
 
 			// Used by camelCase as callback to replace()
-			function fcamelCase(_all, letter) {
+			function fcamelCase(all, letter) {
 				return letter.toUpperCase();
 			}
 
@@ -4827,6 +4750,27 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				isAttached(elem) && jQuery.css(elem, "display") === "none";
 			};
 
+			var swap = function swap(elem, options, callback, args) {
+				var ret,
+				    name,
+				    old = {};
+
+				// Remember the old values, and insert the new ones
+				for (name in options) {
+					old[name] = elem.style[name];
+					elem.style[name] = options[name];
+				}
+
+				ret = callback.apply(elem, args || []);
+
+				// Revert the old values
+				for (name in options) {
+					elem.style[name] = old[name];
+				}
+
+				return ret;
+			};
+
 			function adjustCSS(elem, prop, valueParts, tween) {
 				var adjusted,
 				    scale,
@@ -4988,39 +4932,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			var rscriptType = /^$|^module$|\/(?:java|ecma)script/i;
 
-			(function () {
-				var fragment = document.createDocumentFragment(),
-				    div = fragment.appendChild(document.createElement("div")),
-				    input = document.createElement("input");
-
-				// Support: Android 4.0 - 4.3 only
-				// Check state lost if the name is set (#11217)
-				// Support: Windows Web Apps (WWA)
-				// `name` and `type` must use .setAttribute for WWA (#14901)
-				input.setAttribute("type", "radio");
-				input.setAttribute("checked", "checked");
-				input.setAttribute("name", "t");
-
-				div.appendChild(input);
-
-				// Support: Android <=4.1 only
-				// Older WebKit doesn't clone checked state correctly in fragments
-				support.checkClone = div.cloneNode(true).cloneNode(true).lastChild.checked;
-
-				// Support: IE <=11 only
-				// Make sure textarea (and checkbox) defaultValue is properly cloned
-				div.innerHTML = "<textarea>x</textarea>";
-				support.noCloneChecked = !!div.cloneNode(true).lastChild.defaultValue;
-
-				// Support: IE <=9 only
-				// IE <=9 replaces <option> tags with their contents when inserted outside of
-				// the select element.
-				div.innerHTML = "<option></option>";
-				support.option = !!div.lastChild;
-			})();
-
 			// We have to close these tags to support XHTML (#13200)
 			var wrapMap = {
+
+				// Support: IE <=9 only
+				option: [1, "<select multiple='multiple'>", "</select>"],
 
 				// XHTML parsers do not magically insert elements in the
 				// same way that tag soup parsers do. So we cannot shorten
@@ -5033,13 +4949,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				_default: [0, "", ""]
 			};
 
+			// Support: IE <=9 only
+			wrapMap.optgroup = wrapMap.option;
+
 			wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 			wrapMap.th = wrapMap.td;
-
-			// Support: IE <=9 only
-			if (!support.option) {
-				wrapMap.optgroup = wrapMap.option = [1, "<select multiple='multiple'>", "</select>"];
-			}
 
 			function getAll(context, tag) {
 
@@ -5168,7 +5082,34 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				return fragment;
 			}
 
-			var rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
+			(function () {
+				var fragment = document.createDocumentFragment(),
+				    div = fragment.appendChild(document.createElement("div")),
+				    input = document.createElement("input");
+
+				// Support: Android 4.0 - 4.3 only
+				// Check state lost if the name is set (#11217)
+				// Support: Windows Web Apps (WWA)
+				// `name` and `type` must use .setAttribute for WWA (#14901)
+				input.setAttribute("type", "radio");
+				input.setAttribute("checked", "checked");
+				input.setAttribute("name", "t");
+
+				div.appendChild(input);
+
+				// Support: Android <=4.1 only
+				// Older WebKit doesn't clone checked state correctly in fragments
+				support.checkClone = div.cloneNode(true).cloneNode(true).lastChild.checked;
+
+				// Support: IE <=11 only
+				// Make sure textarea (and checkbox) defaultValue is properly cloned
+				div.innerHTML = "<textarea>x</textarea>";
+				support.noCloneChecked = !!div.cloneNode(true).lastChild.defaultValue;
+			})();
+
+			var rkeyEvent = /^key/,
+			    rmouseEvent = /^(?:mouse|pointer|contextmenu|drag|drop)|click/,
+			    rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
 
 			function returnTrue() {
 				return true;
@@ -5281,8 +5222,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					    origType,
 					    elemData = dataPriv.get(elem);
 
-					// Only attach events to objects that accept data
-					if (!acceptData(elem)) {
+					// Don't attach events to noData or text/comment nodes (but allow plain objects)
+					if (!elemData) {
 						return;
 					}
 
@@ -5306,7 +5247,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 					// Init the element's event structure and main handler, if this is the first
 					if (!(events = elemData.events)) {
-						events = elemData.events = Object.create(null);
+						events = elemData.events = {};
 					}
 					if (!(eventHandle = elemData.handle)) {
 						eventHandle = elemData.handle = function (e) {
@@ -5463,6 +5404,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 				dispatch: function dispatch(nativeEvent) {
 
+					// Make a writable jQuery.Event from the native event object
+					var event = jQuery.event.fix(nativeEvent);
+
 					var i,
 					    j,
 					    ret,
@@ -5470,11 +5414,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					    handleObj,
 					    handlerQueue,
 					    args = new Array(arguments.length),
-
-
-					// Make a writable jQuery.Event from the native event object
-					event = jQuery.event.fix(nativeEvent),
-					    handlers = (dataPriv.get(this, "events") || Object.create(null))[event.type] || [],
+					    handlers = (dataPriv.get(this, "events") || {})[event.type] || [],
 					    special = jQuery.event.special[event.type] || {};
 
 					// Use the fix-ed jQuery.Event rather than the (read-only) native event
@@ -5733,13 +5673,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 									// Cancel the outer synthetic event
 									event.stopImmediatePropagation();
 									event.preventDefault();
-
-									// Support: Chrome 86+
-									// In Chrome, if an element having a focusout handler is blurred by
-									// clicking outside of it, it invokes the handler synchronously. If
-									// that handler calls `.remove()` on the element, the data is cleared,
-									// leaving `result` undefined. We need to guard against this.
-									return result && result.value;
+									return result.value;
 								}
 
 								// If this is an inner synthetic event for an event with a bubbling surrogate
@@ -5896,7 +5830,34 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				targetTouches: true,
 				toElement: true,
 				touches: true,
-				which: true
+
+				which: function which(event) {
+					var button = event.button;
+
+					// Add which for key events
+					if (event.which == null && rkeyEvent.test(event.type)) {
+						return event.charCode != null ? event.charCode : event.keyCode;
+					}
+
+					// Add which for click: 1 === left; 2 === middle; 3 === right
+					if (!event.which && button !== undefined && rmouseEvent.test(event.type)) {
+						if (button & 1) {
+							return 1;
+						}
+
+						if (button & 2) {
+							return 3;
+						}
+
+						if (button & 4) {
+							return 2;
+						}
+
+						return 0;
+					}
+
+					return event.which;
+				}
 			}, jQuery.event.addProp);
 
 			jQuery.each({ focus: "focusin", blur: "focusout" }, function (type, delegateType) {
@@ -5919,12 +5880,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						leverageNative(this, type);
 
 						// Return non-false to allow normal event-path propagation
-						return true;
-					},
-
-					// Suppress native focus or blur as it's already being fired
-					// in leverageNative.
-					_default: function _default() {
 						return true;
 					},
 
@@ -6010,6 +5965,14 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			var
 
+			/* eslint-disable max-len */
+
+			// See https://github.com/eslint/eslint/issues/3229
+			rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([a-z][^\/\0>\x20\t\r\n\f]*)[^>]*)\/>/gi,
+
+
+			/* eslint-enable */
+
 			// Support: IE <=10 - 11, Edge 12 - 13 only
 			// In IE/Edge using regex groups here causes severe slowdowns.
 			// See https://connect.microsoft.com/IE/feedback/details/1736512/
@@ -6046,7 +6009,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 
 			function cloneCopyEvent(src, dest) {
-				var i, l, type, pdataOld, udataOld, udataCur, events;
+				var i, l, type, pdataOld, pdataCur, udataOld, udataCur, events;
 
 				if (dest.nodeType !== 1) {
 					return;
@@ -6054,11 +6017,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 				// 1. Copy private data: events, handlers, etc.
 				if (dataPriv.hasData(src)) {
-					pdataOld = dataPriv.get(src);
+					pdataOld = dataPriv.access(src);
+					pdataCur = dataPriv.set(dest, pdataOld);
 					events = pdataOld.events;
 
 					if (events) {
-						dataPriv.remove(dest, "handle events");
+						delete pdataCur.handle;
+						pdataCur.events = {};
 
 						for (type in events) {
 							for (i = 0, l = events[type].length; i < l; i++) {
@@ -6094,7 +6059,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			function domManip(collection, args, callback, ignored) {
 
 				// Flatten any nested arrays
-				args = flat(args);
+				args = concat.apply([], args);
 
 				var fragment,
 				    first,
@@ -6170,7 +6135,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 										if (jQuery._evalUrl && !node.noModule) {
 											jQuery._evalUrl(node.src, {
 												nonce: node.nonce || node.getAttribute("nonce")
-											}, doc);
+											});
 										}
 									} else {
 										DOMEval(node.textContent.replace(rcleanScript, ""), node, doc);
@@ -6207,7 +6172,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			jQuery.extend({
 				htmlPrefilter: function htmlPrefilter(html) {
-					return html;
+					return html.replace(rxhtmlTag, "<$1></$2>");
 				},
 
 				clone: function clone(elem, dataAndEvents, deepDataAndEvents) {
@@ -6470,27 +6435,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				return view.getComputedStyle(elem);
 			};
 
-			var swap = function swap(elem, options, callback) {
-				var ret,
-				    name,
-				    old = {};
-
-				// Remember the old values, and insert the new ones
-				for (name in options) {
-					old[name] = elem.style[name];
-					elem.style[name] = options[name];
-				}
-
-				ret = callback.call(elem);
-
-				// Revert the old values
-				for (name in options) {
-					elem.style[name] = old[name];
-				}
-
-				return ret;
-			};
-
 			var rboxStyle = new RegExp(cssExpand.join("|"), "i");
 
 			(function () {
@@ -6545,7 +6489,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				    boxSizingReliableVal,
 				    scrollboxSizeVal,
 				    pixelBoxStylesVal,
-				    reliableTrDimensionsVal,
 				    reliableMarginLeftVal,
 				    container = document.createElement("div"),
 				    div = document.createElement("div");
@@ -6581,49 +6524,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					scrollboxSize: function scrollboxSize() {
 						computeStyleTests();
 						return scrollboxSizeVal;
-					},
-
-					// Support: IE 9 - 11+, Edge 15 - 18+
-					// IE/Edge misreport `getComputedStyle` of table rows with width/height
-					// set in CSS while `offset*` properties report correct values.
-					// Behavior in IE 9 is more subtle than in newer versions & it passes
-					// some versions of this test; make sure not to make it pass there!
-					//
-					// Support: Firefox 70+
-					// Only Firefox includes border widths
-					// in computed dimensions. (gh-4529)
-					reliableTrDimensions: function reliableTrDimensions() {
-						var table, tr, trChild, trStyle;
-						if (reliableTrDimensionsVal == null) {
-							table = document.createElement("table");
-							tr = document.createElement("tr");
-							trChild = document.createElement("div");
-
-							table.style.cssText = "position:absolute;left:-11111px;border-collapse:separate";
-							tr.style.cssText = "border:1px solid";
-
-							// Support: Chrome 86+
-							// Height set through cssText does not get applied.
-							// Computed height then comes back as 0.
-							tr.style.height = "1px";
-							trChild.style.height = "9px";
-
-							// Support: Android 8 Chrome 86+
-							// In our bodyBackground.html iframe,
-							// display for all div elements is set to "inline",
-							// which causes a problem only in Android 8 Chrome 86.
-							// Ensuring the div is display: block
-							// gets around this issue.
-							trChild.style.display = "block";
-
-							documentElement.appendChild(table).appendChild(tr).appendChild(trChild);
-
-							trStyle = window.getComputedStyle(tr);
-							reliableTrDimensionsVal = parseInt(trStyle.height, 10) + parseInt(trStyle.borderTopWidth, 10) + parseInt(trStyle.borderBottomWidth, 10) === tr.offsetHeight;
-
-							documentElement.removeChild(table);
-						}
-						return reliableTrDimensionsVal;
 					}
 				});
 			})();
@@ -6747,7 +6647,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				fontWeight: "400"
 			};
 
-			function setPositiveNumber(_elem, value, subtract) {
+			function setPositiveNumber(elem, value, subtract) {
 
 				// Any relative (+/-) values have already been
 				// normalized at this point
@@ -6844,27 +6744,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					val = "auto";
 				}
 
-				// Support: IE 9 - 11 only
-				// Use offsetWidth/offsetHeight for when box sizing is unreliable.
-				// In those cases, the computed value can be trusted to be border-box.
-				if ((!support.boxSizingReliable() && isBorderBox ||
-
-				// Support: IE 10 - 11+, Edge 15 - 18+
-				// IE/Edge misreport `getComputedStyle` of table rows with width/height
-				// set in CSS while `offset*` properties report correct values.
-				// Interestingly, in some cases IE 9 doesn't suffer from this issue.
-				!support.reliableTrDimensions() && nodeName(elem, "tr") ||
-
 				// Fall back to offsetWidth/offsetHeight when value is "auto"
 				// This happens for inline elements with no explicit setting (gh-3571)
-				val === "auto" ||
-
 				// Support: Android <=4.1 - 4.3 only
 				// Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
-				!parseFloat(val) && jQuery.css(elem, "display", false, styles) === "inline") &&
-
-				// Make sure the element is visible & connected
-				elem.getClientRects().length) {
+				// Support: IE 9-11 only
+				// Also use offsetWidth/offsetHeight for when box sizing is unreliable
+				// We use getClientRects() to check for hidden/disconnected.
+				// In those cases, the computed value can be trusted to be border-box
+				if ((!support.boxSizingReliable() && isBorderBox || val === "auto" || !parseFloat(val) && jQuery.css(elem, "display", false, styles) === "inline") && elem.getClientRects().length) {
 
 					isBorderBox = jQuery.css(elem, "boxSizing", false, styles) === "border-box";
 
@@ -7051,7 +6939,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				}
 			});
 
-			jQuery.each(["height", "width"], function (_i, dimension) {
+			jQuery.each(["height", "width"], function (i, dimension) {
 				jQuery.cssHooks[dimension] = {
 					get: function get(elem, computed, extra) {
 						if (computed) {
@@ -7771,7 +7659,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							anim.stop(true);
 						}
 					};
-
 					doAnimation.finish = doAnimation;
 
 					return empty || optall.queue === false ? this.each(doAnimation) : this.queue(optall.queue, doAnimation);
@@ -7788,7 +7675,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						clearQueue = type;
 						type = undefined;
 					}
-					if (clearQueue) {
+					if (clearQueue && type !== false) {
 						this.queue(type || "fx", []);
 					}
 
@@ -7870,7 +7757,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				}
 			});
 
-			jQuery.each(["toggle", "show", "hide"], function (_i, name) {
+			jQuery.each(["toggle", "show", "hide"], function (i, name) {
 				var cssFn = jQuery.fn[name];
 				jQuery.fn[name] = function (speed, easing, callback) {
 					return speed == null || typeof speed === "boolean" ? cssFn.apply(this, arguments) : this.animate(genFx(name, true), speed, easing, callback);
@@ -8085,7 +7972,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				}
 			};
 
-			jQuery.each(jQuery.expr.match.bool.source.match(/\w+/g), function (_i, name) {
+			jQuery.each(jQuery.expr.match.bool.source.match(/\w+/g), function (i, name) {
 				var getter = attrHandle[name] || jQuery.find.attr;
 
 				attrHandle[name] = function (elem, name, isXML) {
@@ -8676,7 +8563,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						event.type = i > 1 ? bubbleType : special.bindType || type;
 
 						// jQuery handler
-						handle = (dataPriv.get(cur, "events") || Object.create(null))[event.type] && dataPriv.get(cur, "handle");
+						handle = (dataPriv.get(cur, "events") || {})[event.type] && dataPriv.get(cur, "handle");
 						if (handle) {
 							handle.apply(cur, data);
 						}
@@ -8779,10 +8666,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 					jQuery.event.special[fix] = {
 						setup: function setup() {
-
-							// Handle: regular nodes (via `this.ownerDocument`), window
-							// (via `this.document`) & document (via `this`).
-							var doc = this.ownerDocument || this.document || this,
+							var doc = this.ownerDocument || this,
 							    attaches = dataPriv.access(doc, fix);
 
 							if (!attaches) {
@@ -8791,7 +8675,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							dataPriv.access(doc, fix, (attaches || 0) + 1);
 						},
 						teardown: function teardown() {
-							var doc = this.ownerDocument || this.document || this,
+							var doc = this.ownerDocument || this,
 							    attaches = dataPriv.access(doc, fix) - 1;
 
 							if (!attaches) {
@@ -8806,13 +8690,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			}
 			var location = window.location;
 
-			var nonce = { guid: Date.now() };
+			var nonce = Date.now();
 
 			var rquery = /\?/;
 
 			// Cross-browser xml parsing
 			jQuery.parseXML = function (data) {
-				var xml, parserErrorElem;
+				var xml;
 				if (!data || typeof data !== "string") {
 					return null;
 				}
@@ -8821,13 +8705,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				// IE throws on parseFromString with invalid input.
 				try {
 					xml = new window.DOMParser().parseFromString(data, "text/xml");
-				} catch (e) {}
+				} catch (e) {
+					xml = undefined;
+				}
 
-				parserErrorElem = xml && xml.getElementsByTagName("parsererror")[0];
-				if (!xml || parserErrorElem) {
-					jQuery.error("Invalid XML: " + (parserErrorElem ? jQuery.map(parserErrorElem.childNodes, function (el) {
-						return el.textContent;
-					}).join("\n") : data));
+				if (!xml || xml.getElementsByTagName("parsererror").length) {
+					jQuery.error("Invalid XML: " + data);
 				}
 				return xml;
 			};
@@ -8919,7 +8802,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 						// Use .is( ":disabled" ) so that fieldset[disabled] works
 						return this.name && !jQuery(this).is(":disabled") && rsubmittable.test(this.nodeName) && !rsubmitterTypes.test(type) && (this.checked || !rcheckableType.test(type));
-					}).map(function (_i, elem) {
+					}).map(function (i, elem) {
 						var val = jQuery(this).val();
 
 						if (val == null) {
@@ -8975,7 +8858,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			// Anchor tag for parsing the document origin
 			originAnchor = document.createElement("a");
-
 			originAnchor.href = location.href;
 
 			// Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
@@ -9551,7 +9433,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						// Add or update anti-cache param if needed
 						if (s.cache === false) {
 							cacheURL = cacheURL.replace(rantiCache, "$1");
-							uncached = (rquery.test(cacheURL) ? "&" : "?") + "_=" + nonce.guid++ + uncached;
+							uncached = (rquery.test(cacheURL) ? "&" : "?") + "_=" + nonce++ + uncached;
 						}
 
 						// Put hash and anti-cache on the URL that will be requested (gh-1732)
@@ -9680,11 +9562,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							response = ajaxHandleResponses(s, jqXHR, responses);
 						}
 
-						// Use a noop converter for missing script but not if jsonp
-						if (!isSuccess && jQuery.inArray("script", s.dataTypes) > -1 && jQuery.inArray("json", s.dataTypes) < 0) {
-							s.converters["text script"] = function () {};
-						}
-
 						// Convert no matter what (that way responseXXX fields are always set)
 						response = ajaxConvert(s, response, jqXHR, isSuccess);
 
@@ -9774,7 +9651,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				}
 			});
 
-			jQuery.each(["get", "post"], function (_i, method) {
+			jQuery.each(["get", "post"], function (i, method) {
 				jQuery[method] = function (url, data, callback, type) {
 
 					// Shift arguments if data argument was omitted
@@ -9795,16 +9672,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				};
 			});
 
-			jQuery.ajaxPrefilter(function (s) {
-				var i;
-				for (i in s.headers) {
-					if (i.toLowerCase() === "content-type") {
-						s.contentType = s.headers[i] || "";
-					}
-				}
-			});
-
-			jQuery._evalUrl = function (url, options, doc) {
+			jQuery._evalUrl = function (url, options) {
 				return jQuery.ajax({
 					url: url,
 
@@ -9822,7 +9690,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 						"text script": function textScript() {}
 					},
 					dataFilter: function dataFilter(response) {
-						jQuery.globalEval(response, options, doc);
+						jQuery.globalEval(response, options);
 					}
 				});
 			};
@@ -10111,7 +9979,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			jQuery.ajaxSetup({
 				jsonp: "callback",
 				jsonpCallback: function jsonpCallback() {
-					var callback = oldCallbacks.pop() || jQuery.expando + "_" + nonce.guid++;
+					var callback = oldCallbacks.pop() || jQuery.expando + "_" + nonce++;
 					this[callback] = true;
 					return callback;
 				}
@@ -10316,6 +10184,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				return this;
 			};
 
+			// Attach a bunch of functions for handling common AJAX events
+			jQuery.each(["ajaxStart", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend"], function (i, type) {
+				jQuery.fn[type] = function (fn) {
+					return this.on(type, fn);
+				};
+			});
+
 			jQuery.expr.pseudos.animated = function (elem) {
 				return jQuery.grep(jQuery.timers, function (fn) {
 					return elem === fn.elem;
@@ -10516,7 +10391,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			// Blink bug: https://bugs.chromium.org/p/chromium/issues/detail?id=589347
 			// getComputedStyle returns percent when specified for top/left/bottom/right;
 			// rather than make the css module depend on the offset module, just check for it here
-			jQuery.each(["top", "left"], function (_i, prop) {
+			jQuery.each(["top", "left"], function (i, prop) {
 				jQuery.cssHooks[prop] = addGetHookIf(support.pixelPosition, function (elem, computed) {
 					if (computed) {
 						computed = curCSS(elem, prop);
@@ -10529,11 +10404,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			// Create innerHeight, innerWidth, height, width, outerHeight and outerWidth methods
 			jQuery.each({ Height: "height", Width: "width" }, function (name, type) {
-				jQuery.each({
-					padding: "inner" + name,
-					content: type,
-					"": "outer" + name
-				}, function (defaultExtra, funcName) {
+				jQuery.each({ padding: "inner" + name, content: type, "": "outer" + name }, function (defaultExtra, funcName) {
 
 					// Margin is only for outerHeight, outerWidth
 					jQuery.fn[funcName] = function (margin, value) {
@@ -10570,10 +10441,18 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				});
 			});
 
-			jQuery.each(["ajaxStart", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend"], function (_i, type) {
-				jQuery.fn[type] = function (fn) {
-					return this.on(type, fn);
+			jQuery.each(("blur focus focusin focusout resize scroll click dblclick " + "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " + "change select submit keydown keypress keyup contextmenu").split(" "), function (i, name) {
+
+				// Handle event binding
+				jQuery.fn[name] = function (data, fn) {
+					return arguments.length > 0 ? this.on(name, null, data, fn) : this.trigger(name);
 				};
+			});
+
+			jQuery.fn.extend({
+				hover: function hover(fnOver, fnOut) {
+					return this.mouseenter(fnOver).mouseleave(fnOut || fnOver);
+				}
 			});
 
 			jQuery.fn.extend({
@@ -10592,24 +10471,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 					// ( namespace ) or ( selector, types [, fn] )
 					return arguments.length === 1 ? this.off(selector, "**") : this.off(types, selector || "**", fn);
-				},
-
-				hover: function hover(fnOver, fnOut) {
-					return this.mouseenter(fnOver).mouseleave(fnOut || fnOver);
 				}
 			});
-
-			jQuery.each(("blur focus focusin focusout resize scroll click dblclick " + "mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " + "change select submit keydown keypress keyup contextmenu").split(" "), function (_i, name) {
-
-				// Handle event binding
-				jQuery.fn[name] = function (data, fn) {
-					return arguments.length > 0 ? this.on(name, null, data, fn) : this.trigger(name);
-				};
-			});
-
-			// Support: Android <=4.0 only
-			// Make sure we trim BOM and NBSP
-			var rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
 
 			// Bind a function to a context, optionally partially applying any
 			// arguments.
@@ -10673,10 +10536,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				!isNaN(obj - parseFloat(obj));
 			};
 
-			jQuery.trim = function (text) {
-				return text == null ? "" : (text + "").replace(rtrim, "");
-			};
-
 			// Register as a named AMD module, since jQuery can be concatenated with other
 			// files that may use define, but not via a proper concatenation script that
 			// understands anonymous AMD modules. A named AMD is safest and most robust
@@ -10720,11 +10579,2765 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			// Expose jQuery and $ identifiers, even in AMD
 			// (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
 			// and CommonJS for browser emulators (#13566)
-			if (typeof noGlobal === "undefined") {
+			if (!noGlobal) {
 				window.jQuery = window.$ = jQuery;
 			}
 
 			return jQuery;
 		});
-	}, {}] }, {}, [2]);
+	}, {}], 7: [function (require, module, exports) {
+		/*
+       _ _      _       _
+   ___| (_) ___| | __  (_)___
+  / __| | |/ __| |/ /  | / __|
+  \__ \ | | (__|   < _ | \__ \
+  |___/_|_|\___|_|\_(_)/ |___/
+                     |__/
+  
+   Version: 1.8.1
+    Author: Ken Wheeler
+   Website: http://kenwheeler.github.io
+      Docs: http://kenwheeler.github.io/slick
+      Repo: http://github.com/kenwheeler/slick
+    Issues: http://github.com/kenwheeler/slick/issues
+  
+   */
+		/* global window, document, define, jQuery, setInterval, clearInterval */
+		;(function (factory) {
+			'use strict';
+
+			if (typeof define === 'function' && define.amd) {
+				define(['jquery'], factory);
+			} else if (typeof exports !== 'undefined') {
+				module.exports = factory(require('jquery'));
+			} else {
+				factory(jQuery);
+			}
+		})(function ($) {
+			'use strict';
+
+			var Slick = window.Slick || {};
+
+			Slick = function () {
+
+				var instanceUid = 0;
+
+				function Slick(element, settings) {
+
+					var _ = this,
+					    dataSettings;
+
+					_.defaults = {
+						accessibility: true,
+						adaptiveHeight: false,
+						appendArrows: $(element),
+						appendDots: $(element),
+						arrows: true,
+						asNavFor: null,
+						prevArrow: '<button class="slick-prev" aria-label="Previous" type="button">Previous</button>',
+						nextArrow: '<button class="slick-next" aria-label="Next" type="button">Next</button>',
+						autoplay: false,
+						autoplaySpeed: 3000,
+						centerMode: false,
+						centerPadding: '50px',
+						cssEase: 'ease',
+						customPaging: function customPaging(slider, i) {
+							return $('<button type="button" />').text(i + 1);
+						},
+						dots: false,
+						dotsClass: 'slick-dots',
+						draggable: true,
+						easing: 'linear',
+						edgeFriction: 0.35,
+						fade: false,
+						focusOnSelect: false,
+						focusOnChange: false,
+						infinite: true,
+						initialSlide: 0,
+						lazyLoad: 'ondemand',
+						mobileFirst: false,
+						pauseOnHover: true,
+						pauseOnFocus: true,
+						pauseOnDotsHover: false,
+						respondTo: 'window',
+						responsive: null,
+						rows: 1,
+						rtl: false,
+						slide: '',
+						slidesPerRow: 1,
+						slidesToShow: 1,
+						slidesToScroll: 1,
+						speed: 500,
+						swipe: true,
+						swipeToSlide: false,
+						touchMove: true,
+						touchThreshold: 5,
+						useCSS: true,
+						useTransform: true,
+						variableWidth: false,
+						vertical: false,
+						verticalSwiping: false,
+						waitForAnimate: true,
+						zIndex: 1000
+					};
+
+					_.initials = {
+						animating: false,
+						dragging: false,
+						autoPlayTimer: null,
+						currentDirection: 0,
+						currentLeft: null,
+						currentSlide: 0,
+						direction: 1,
+						$dots: null,
+						listWidth: null,
+						listHeight: null,
+						loadIndex: 0,
+						$nextArrow: null,
+						$prevArrow: null,
+						scrolling: false,
+						slideCount: null,
+						slideWidth: null,
+						$slideTrack: null,
+						$slides: null,
+						sliding: false,
+						slideOffset: 0,
+						swipeLeft: null,
+						swiping: false,
+						$list: null,
+						touchObject: {},
+						transformsEnabled: false,
+						unslicked: false
+					};
+
+					$.extend(_, _.initials);
+
+					_.activeBreakpoint = null;
+					_.animType = null;
+					_.animProp = null;
+					_.breakpoints = [];
+					_.breakpointSettings = [];
+					_.cssTransitions = false;
+					_.focussed = false;
+					_.interrupted = false;
+					_.hidden = 'hidden';
+					_.paused = true;
+					_.positionProp = null;
+					_.respondTo = null;
+					_.rowCount = 1;
+					_.shouldClick = true;
+					_.$slider = $(element);
+					_.$slidesCache = null;
+					_.transformType = null;
+					_.transitionType = null;
+					_.visibilityChange = 'visibilitychange';
+					_.windowWidth = 0;
+					_.windowTimer = null;
+
+					dataSettings = $(element).data('slick') || {};
+
+					_.options = $.extend({}, _.defaults, settings, dataSettings);
+
+					_.currentSlide = _.options.initialSlide;
+
+					_.originalSettings = _.options;
+
+					if (typeof document.mozHidden !== 'undefined') {
+						_.hidden = 'mozHidden';
+						_.visibilityChange = 'mozvisibilitychange';
+					} else if (typeof document.webkitHidden !== 'undefined') {
+						_.hidden = 'webkitHidden';
+						_.visibilityChange = 'webkitvisibilitychange';
+					}
+
+					_.autoPlay = $.proxy(_.autoPlay, _);
+					_.autoPlayClear = $.proxy(_.autoPlayClear, _);
+					_.autoPlayIterator = $.proxy(_.autoPlayIterator, _);
+					_.changeSlide = $.proxy(_.changeSlide, _);
+					_.clickHandler = $.proxy(_.clickHandler, _);
+					_.selectHandler = $.proxy(_.selectHandler, _);
+					_.setPosition = $.proxy(_.setPosition, _);
+					_.swipeHandler = $.proxy(_.swipeHandler, _);
+					_.dragHandler = $.proxy(_.dragHandler, _);
+					_.keyHandler = $.proxy(_.keyHandler, _);
+
+					_.instanceUid = instanceUid++;
+
+					// A simple way to check for HTML strings
+					// Strict HTML recognition (must start with <)
+					// Extracted from jQuery v1.11 source
+					_.htmlExpr = /^(?:\s*(<[\w\W]+>)[^>]*)$/;
+
+					_.registerBreakpoints();
+					_.init(true);
+				}
+
+				return Slick;
+			}();
+
+			Slick.prototype.activateADA = function () {
+				var _ = this;
+
+				_.$slideTrack.find('.slick-active').attr({
+					'aria-hidden': 'false'
+				}).find('a, input, button, select').attr({
+					'tabindex': '0'
+				});
+			};
+
+			Slick.prototype.addSlide = Slick.prototype.slickAdd = function (markup, index, addBefore) {
+
+				var _ = this;
+
+				if (typeof index === 'boolean') {
+					addBefore = index;
+					index = null;
+				} else if (index < 0 || index >= _.slideCount) {
+					return false;
+				}
+
+				_.unload();
+
+				if (typeof index === 'number') {
+					if (index === 0 && _.$slides.length === 0) {
+						$(markup).appendTo(_.$slideTrack);
+					} else if (addBefore) {
+						$(markup).insertBefore(_.$slides.eq(index));
+					} else {
+						$(markup).insertAfter(_.$slides.eq(index));
+					}
+				} else {
+					if (addBefore === true) {
+						$(markup).prependTo(_.$slideTrack);
+					} else {
+						$(markup).appendTo(_.$slideTrack);
+					}
+				}
+
+				_.$slides = _.$slideTrack.children(this.options.slide);
+
+				_.$slideTrack.children(this.options.slide).detach();
+
+				_.$slideTrack.append(_.$slides);
+
+				_.$slides.each(function (index, element) {
+					$(element).attr('data-slick-index', index);
+				});
+
+				_.$slidesCache = _.$slides;
+
+				_.reinit();
+			};
+
+			Slick.prototype.animateHeight = function () {
+				var _ = this;
+				if (_.options.slidesToShow === 1 && _.options.adaptiveHeight === true && _.options.vertical === false) {
+					var targetHeight = _.$slides.eq(_.currentSlide).outerHeight(true);
+					_.$list.animate({
+						height: targetHeight
+					}, _.options.speed);
+				}
+			};
+
+			Slick.prototype.animateSlide = function (targetLeft, callback) {
+
+				var animProps = {},
+				    _ = this;
+
+				_.animateHeight();
+
+				if (_.options.rtl === true && _.options.vertical === false) {
+					targetLeft = -targetLeft;
+				}
+				if (_.transformsEnabled === false) {
+					if (_.options.vertical === false) {
+						_.$slideTrack.animate({
+							left: targetLeft
+						}, _.options.speed, _.options.easing, callback);
+					} else {
+						_.$slideTrack.animate({
+							top: targetLeft
+						}, _.options.speed, _.options.easing, callback);
+					}
+				} else {
+
+					if (_.cssTransitions === false) {
+						if (_.options.rtl === true) {
+							_.currentLeft = -_.currentLeft;
+						}
+						$({
+							animStart: _.currentLeft
+						}).animate({
+							animStart: targetLeft
+						}, {
+							duration: _.options.speed,
+							easing: _.options.easing,
+							step: function step(now) {
+								now = Math.ceil(now);
+								if (_.options.vertical === false) {
+									animProps[_.animType] = 'translate(' + now + 'px, 0px)';
+									_.$slideTrack.css(animProps);
+								} else {
+									animProps[_.animType] = 'translate(0px,' + now + 'px)';
+									_.$slideTrack.css(animProps);
+								}
+							},
+							complete: function complete() {
+								if (callback) {
+									callback.call();
+								}
+							}
+						});
+					} else {
+
+						_.applyTransition();
+						targetLeft = Math.ceil(targetLeft);
+
+						if (_.options.vertical === false) {
+							animProps[_.animType] = 'translate3d(' + targetLeft + 'px, 0px, 0px)';
+						} else {
+							animProps[_.animType] = 'translate3d(0px,' + targetLeft + 'px, 0px)';
+						}
+						_.$slideTrack.css(animProps);
+
+						if (callback) {
+							setTimeout(function () {
+
+								_.disableTransition();
+
+								callback.call();
+							}, _.options.speed);
+						}
+					}
+				}
+			};
+
+			Slick.prototype.getNavTarget = function () {
+
+				var _ = this,
+				    asNavFor = _.options.asNavFor;
+
+				if (asNavFor && asNavFor !== null) {
+					asNavFor = $(asNavFor).not(_.$slider);
+				}
+
+				return asNavFor;
+			};
+
+			Slick.prototype.asNavFor = function (index) {
+
+				var _ = this,
+				    asNavFor = _.getNavTarget();
+
+				if (asNavFor !== null && (typeof asNavFor === "undefined" ? "undefined" : _typeof(asNavFor)) === 'object') {
+					asNavFor.each(function () {
+						var target = $(this).slick('getSlick');
+						if (!target.unslicked) {
+							target.slideHandler(index, true);
+						}
+					});
+				}
+			};
+
+			Slick.prototype.applyTransition = function (slide) {
+
+				var _ = this,
+				    transition = {};
+
+				if (_.options.fade === false) {
+					transition[_.transitionType] = _.transformType + ' ' + _.options.speed + 'ms ' + _.options.cssEase;
+				} else {
+					transition[_.transitionType] = 'opacity ' + _.options.speed + 'ms ' + _.options.cssEase;
+				}
+
+				if (_.options.fade === false) {
+					_.$slideTrack.css(transition);
+				} else {
+					_.$slides.eq(slide).css(transition);
+				}
+			};
+
+			Slick.prototype.autoPlay = function () {
+
+				var _ = this;
+
+				_.autoPlayClear();
+
+				if (_.slideCount > _.options.slidesToShow) {
+					_.autoPlayTimer = setInterval(_.autoPlayIterator, _.options.autoplaySpeed);
+				}
+			};
+
+			Slick.prototype.autoPlayClear = function () {
+
+				var _ = this;
+
+				if (_.autoPlayTimer) {
+					clearInterval(_.autoPlayTimer);
+				}
+			};
+
+			Slick.prototype.autoPlayIterator = function () {
+
+				var _ = this,
+				    slideTo = _.currentSlide + _.options.slidesToScroll;
+
+				if (!_.paused && !_.interrupted && !_.focussed) {
+
+					if (_.options.infinite === false) {
+
+						if (_.direction === 1 && _.currentSlide + 1 === _.slideCount - 1) {
+							_.direction = 0;
+						} else if (_.direction === 0) {
+
+							slideTo = _.currentSlide - _.options.slidesToScroll;
+
+							if (_.currentSlide - 1 === 0) {
+								_.direction = 1;
+							}
+						}
+					}
+
+					_.slideHandler(slideTo);
+				}
+			};
+
+			Slick.prototype.buildArrows = function () {
+
+				var _ = this;
+
+				if (_.options.arrows === true) {
+
+					_.$prevArrow = $(_.options.prevArrow).addClass('slick-arrow');
+					_.$nextArrow = $(_.options.nextArrow).addClass('slick-arrow');
+
+					if (_.slideCount > _.options.slidesToShow) {
+
+						_.$prevArrow.removeClass('slick-hidden').removeAttr('aria-hidden tabindex');
+						_.$nextArrow.removeClass('slick-hidden').removeAttr('aria-hidden tabindex');
+
+						if (_.htmlExpr.test(_.options.prevArrow)) {
+							_.$prevArrow.prependTo(_.options.appendArrows);
+						}
+
+						if (_.htmlExpr.test(_.options.nextArrow)) {
+							_.$nextArrow.appendTo(_.options.appendArrows);
+						}
+
+						if (_.options.infinite !== true) {
+							_.$prevArrow.addClass('slick-disabled').attr('aria-disabled', 'true');
+						}
+					} else {
+
+						_.$prevArrow.add(_.$nextArrow).addClass('slick-hidden').attr({
+							'aria-disabled': 'true',
+							'tabindex': '-1'
+						});
+					}
+				}
+			};
+
+			Slick.prototype.buildDots = function () {
+
+				var _ = this,
+				    i,
+				    dot;
+
+				if (_.options.dots === true && _.slideCount > _.options.slidesToShow) {
+
+					_.$slider.addClass('slick-dotted');
+
+					dot = $('<ul />').addClass(_.options.dotsClass);
+
+					for (i = 0; i <= _.getDotCount(); i += 1) {
+						dot.append($('<li />').append(_.options.customPaging.call(this, _, i)));
+					}
+
+					_.$dots = dot.appendTo(_.options.appendDots);
+
+					_.$dots.find('li').first().addClass('slick-active');
+				}
+			};
+
+			Slick.prototype.buildOut = function () {
+
+				var _ = this;
+
+				_.$slides = _.$slider.children(_.options.slide + ':not(.slick-cloned)').addClass('slick-slide');
+
+				_.slideCount = _.$slides.length;
+
+				_.$slides.each(function (index, element) {
+					$(element).attr('data-slick-index', index).data('originalStyling', $(element).attr('style') || '');
+				});
+
+				_.$slider.addClass('slick-slider');
+
+				_.$slideTrack = _.slideCount === 0 ? $('<div class="slick-track"/>').appendTo(_.$slider) : _.$slides.wrapAll('<div class="slick-track"/>').parent();
+
+				_.$list = _.$slideTrack.wrap('<div class="slick-list"/>').parent();
+				_.$slideTrack.css('opacity', 0);
+
+				if (_.options.centerMode === true || _.options.swipeToSlide === true) {
+					_.options.slidesToScroll = 1;
+				}
+
+				$('img[data-lazy]', _.$slider).not('[src]').addClass('slick-loading');
+
+				_.setupInfinite();
+
+				_.buildArrows();
+
+				_.buildDots();
+
+				_.updateDots();
+
+				_.setSlideClasses(typeof _.currentSlide === 'number' ? _.currentSlide : 0);
+
+				if (_.options.draggable === true) {
+					_.$list.addClass('draggable');
+				}
+			};
+
+			Slick.prototype.buildRows = function () {
+
+				var _ = this,
+				    a,
+				    b,
+				    c,
+				    newSlides,
+				    numOfSlides,
+				    originalSlides,
+				    slidesPerSection;
+
+				newSlides = document.createDocumentFragment();
+				originalSlides = _.$slider.children();
+
+				if (_.options.rows > 0) {
+
+					slidesPerSection = _.options.slidesPerRow * _.options.rows;
+					numOfSlides = Math.ceil(originalSlides.length / slidesPerSection);
+
+					for (a = 0; a < numOfSlides; a++) {
+						var slide = document.createElement('div');
+						for (b = 0; b < _.options.rows; b++) {
+							var row = document.createElement('div');
+							for (c = 0; c < _.options.slidesPerRow; c++) {
+								var target = a * slidesPerSection + (b * _.options.slidesPerRow + c);
+								if (originalSlides.get(target)) {
+									row.appendChild(originalSlides.get(target));
+								}
+							}
+							slide.appendChild(row);
+						}
+						newSlides.appendChild(slide);
+					}
+
+					_.$slider.empty().append(newSlides);
+					_.$slider.children().children().children().css({
+						'width': 100 / _.options.slidesPerRow + '%',
+						'display': 'inline-block'
+					});
+				}
+			};
+
+			Slick.prototype.checkResponsive = function (initial, forceUpdate) {
+
+				var _ = this,
+				    breakpoint,
+				    targetBreakpoint,
+				    respondToWidth,
+				    triggerBreakpoint = false;
+				var sliderWidth = _.$slider.width();
+				var windowWidth = window.innerWidth || $(window).width();
+
+				if (_.respondTo === 'window') {
+					respondToWidth = windowWidth;
+				} else if (_.respondTo === 'slider') {
+					respondToWidth = sliderWidth;
+				} else if (_.respondTo === 'min') {
+					respondToWidth = Math.min(windowWidth, sliderWidth);
+				}
+
+				if (_.options.responsive && _.options.responsive.length && _.options.responsive !== null) {
+
+					targetBreakpoint = null;
+
+					for (breakpoint in _.breakpoints) {
+						if (_.breakpoints.hasOwnProperty(breakpoint)) {
+							if (_.originalSettings.mobileFirst === false) {
+								if (respondToWidth < _.breakpoints[breakpoint]) {
+									targetBreakpoint = _.breakpoints[breakpoint];
+								}
+							} else {
+								if (respondToWidth > _.breakpoints[breakpoint]) {
+									targetBreakpoint = _.breakpoints[breakpoint];
+								}
+							}
+						}
+					}
+
+					if (targetBreakpoint !== null) {
+						if (_.activeBreakpoint !== null) {
+							if (targetBreakpoint !== _.activeBreakpoint || forceUpdate) {
+								_.activeBreakpoint = targetBreakpoint;
+								if (_.breakpointSettings[targetBreakpoint] === 'unslick') {
+									_.unslick(targetBreakpoint);
+								} else {
+									_.options = $.extend({}, _.originalSettings, _.breakpointSettings[targetBreakpoint]);
+									if (initial === true) {
+										_.currentSlide = _.options.initialSlide;
+									}
+									_.refresh(initial);
+								}
+								triggerBreakpoint = targetBreakpoint;
+							}
+						} else {
+							_.activeBreakpoint = targetBreakpoint;
+							if (_.breakpointSettings[targetBreakpoint] === 'unslick') {
+								_.unslick(targetBreakpoint);
+							} else {
+								_.options = $.extend({}, _.originalSettings, _.breakpointSettings[targetBreakpoint]);
+								if (initial === true) {
+									_.currentSlide = _.options.initialSlide;
+								}
+								_.refresh(initial);
+							}
+							triggerBreakpoint = targetBreakpoint;
+						}
+					} else {
+						if (_.activeBreakpoint !== null) {
+							_.activeBreakpoint = null;
+							_.options = _.originalSettings;
+							if (initial === true) {
+								_.currentSlide = _.options.initialSlide;
+							}
+							_.refresh(initial);
+							triggerBreakpoint = targetBreakpoint;
+						}
+					}
+
+					// only trigger breakpoints during an actual break. not on initialize.
+					if (!initial && triggerBreakpoint !== false) {
+						_.$slider.trigger('breakpoint', [_, triggerBreakpoint]);
+					}
+				}
+			};
+
+			Slick.prototype.changeSlide = function (event, dontAnimate) {
+
+				var _ = this,
+				    $target = $(event.currentTarget),
+				    indexOffset,
+				    slideOffset,
+				    unevenOffset;
+
+				// If target is a link, prevent default action.
+				if ($target.is('a')) {
+					event.preventDefault();
+				}
+
+				// If target is not the <li> element (ie: a child), find the <li>.
+				if (!$target.is('li')) {
+					$target = $target.closest('li');
+				}
+
+				unevenOffset = _.slideCount % _.options.slidesToScroll !== 0;
+				indexOffset = unevenOffset ? 0 : (_.slideCount - _.currentSlide) % _.options.slidesToScroll;
+
+				switch (event.data.message) {
+
+					case 'previous':
+						slideOffset = indexOffset === 0 ? _.options.slidesToScroll : _.options.slidesToShow - indexOffset;
+						if (_.slideCount > _.options.slidesToShow) {
+							_.slideHandler(_.currentSlide - slideOffset, false, dontAnimate);
+						}
+						break;
+
+					case 'next':
+						slideOffset = indexOffset === 0 ? _.options.slidesToScroll : indexOffset;
+						if (_.slideCount > _.options.slidesToShow) {
+							_.slideHandler(_.currentSlide + slideOffset, false, dontAnimate);
+						}
+						break;
+
+					case 'index':
+						var index = event.data.index === 0 ? 0 : event.data.index || $target.index() * _.options.slidesToScroll;
+
+						_.slideHandler(_.checkNavigable(index), false, dontAnimate);
+						$target.children().trigger('focus');
+						break;
+
+					default:
+						return;
+				}
+			};
+
+			Slick.prototype.checkNavigable = function (index) {
+
+				var _ = this,
+				    navigables,
+				    prevNavigable;
+
+				navigables = _.getNavigableIndexes();
+				prevNavigable = 0;
+				if (index > navigables[navigables.length - 1]) {
+					index = navigables[navigables.length - 1];
+				} else {
+					for (var n in navigables) {
+						if (index < navigables[n]) {
+							index = prevNavigable;
+							break;
+						}
+						prevNavigable = navigables[n];
+					}
+				}
+
+				return index;
+			};
+
+			Slick.prototype.cleanUpEvents = function () {
+
+				var _ = this;
+
+				if (_.options.dots && _.$dots !== null) {
+
+					$('li', _.$dots).off('click.slick', _.changeSlide).off('mouseenter.slick', $.proxy(_.interrupt, _, true)).off('mouseleave.slick', $.proxy(_.interrupt, _, false));
+
+					if (_.options.accessibility === true) {
+						_.$dots.off('keydown.slick', _.keyHandler);
+					}
+				}
+
+				_.$slider.off('focus.slick blur.slick');
+
+				if (_.options.arrows === true && _.slideCount > _.options.slidesToShow) {
+					_.$prevArrow && _.$prevArrow.off('click.slick', _.changeSlide);
+					_.$nextArrow && _.$nextArrow.off('click.slick', _.changeSlide);
+
+					if (_.options.accessibility === true) {
+						_.$prevArrow && _.$prevArrow.off('keydown.slick', _.keyHandler);
+						_.$nextArrow && _.$nextArrow.off('keydown.slick', _.keyHandler);
+					}
+				}
+
+				_.$list.off('touchstart.slick mousedown.slick', _.swipeHandler);
+				_.$list.off('touchmove.slick mousemove.slick', _.swipeHandler);
+				_.$list.off('touchend.slick mouseup.slick', _.swipeHandler);
+				_.$list.off('touchcancel.slick mouseleave.slick', _.swipeHandler);
+
+				_.$list.off('click.slick', _.clickHandler);
+
+				$(document).off(_.visibilityChange, _.visibility);
+
+				_.cleanUpSlideEvents();
+
+				if (_.options.accessibility === true) {
+					_.$list.off('keydown.slick', _.keyHandler);
+				}
+
+				if (_.options.focusOnSelect === true) {
+					$(_.$slideTrack).children().off('click.slick', _.selectHandler);
+				}
+
+				$(window).off('orientationchange.slick.slick-' + _.instanceUid, _.orientationChange);
+
+				$(window).off('resize.slick.slick-' + _.instanceUid, _.resize);
+
+				$('[draggable!=true]', _.$slideTrack).off('dragstart', _.preventDefault);
+
+				$(window).off('load.slick.slick-' + _.instanceUid, _.setPosition);
+			};
+
+			Slick.prototype.cleanUpSlideEvents = function () {
+
+				var _ = this;
+
+				_.$list.off('mouseenter.slick', $.proxy(_.interrupt, _, true));
+				_.$list.off('mouseleave.slick', $.proxy(_.interrupt, _, false));
+			};
+
+			Slick.prototype.cleanUpRows = function () {
+
+				var _ = this,
+				    originalSlides;
+
+				if (_.options.rows > 0) {
+					originalSlides = _.$slides.children().children();
+					originalSlides.removeAttr('style');
+					_.$slider.empty().append(originalSlides);
+				}
+			};
+
+			Slick.prototype.clickHandler = function (event) {
+
+				var _ = this;
+
+				if (_.shouldClick === false) {
+					event.stopImmediatePropagation();
+					event.stopPropagation();
+					event.preventDefault();
+				}
+			};
+
+			Slick.prototype.destroy = function (refresh) {
+
+				var _ = this;
+
+				_.autoPlayClear();
+
+				_.touchObject = {};
+
+				_.cleanUpEvents();
+
+				$('.slick-cloned', _.$slider).detach();
+
+				if (_.$dots) {
+					_.$dots.remove();
+				}
+
+				if (_.$prevArrow && _.$prevArrow.length) {
+
+					_.$prevArrow.removeClass('slick-disabled slick-arrow slick-hidden').removeAttr('aria-hidden aria-disabled tabindex').css('display', '');
+
+					if (_.htmlExpr.test(_.options.prevArrow)) {
+						_.$prevArrow.remove();
+					}
+				}
+
+				if (_.$nextArrow && _.$nextArrow.length) {
+
+					_.$nextArrow.removeClass('slick-disabled slick-arrow slick-hidden').removeAttr('aria-hidden aria-disabled tabindex').css('display', '');
+
+					if (_.htmlExpr.test(_.options.nextArrow)) {
+						_.$nextArrow.remove();
+					}
+				}
+
+				if (_.$slides) {
+
+					_.$slides.removeClass('slick-slide slick-active slick-center slick-visible slick-current').removeAttr('aria-hidden').removeAttr('data-slick-index').each(function () {
+						$(this).attr('style', $(this).data('originalStyling'));
+					});
+
+					_.$slideTrack.children(this.options.slide).detach();
+
+					_.$slideTrack.detach();
+
+					_.$list.detach();
+
+					_.$slider.append(_.$slides);
+				}
+
+				_.cleanUpRows();
+
+				_.$slider.removeClass('slick-slider');
+				_.$slider.removeClass('slick-initialized');
+				_.$slider.removeClass('slick-dotted');
+
+				_.unslicked = true;
+
+				if (!refresh) {
+					_.$slider.trigger('destroy', [_]);
+				}
+			};
+
+			Slick.prototype.disableTransition = function (slide) {
+
+				var _ = this,
+				    transition = {};
+
+				transition[_.transitionType] = '';
+
+				if (_.options.fade === false) {
+					_.$slideTrack.css(transition);
+				} else {
+					_.$slides.eq(slide).css(transition);
+				}
+			};
+
+			Slick.prototype.fadeSlide = function (slideIndex, callback) {
+
+				var _ = this;
+
+				if (_.cssTransitions === false) {
+
+					_.$slides.eq(slideIndex).css({
+						zIndex: _.options.zIndex
+					});
+
+					_.$slides.eq(slideIndex).animate({
+						opacity: 1
+					}, _.options.speed, _.options.easing, callback);
+				} else {
+
+					_.applyTransition(slideIndex);
+
+					_.$slides.eq(slideIndex).css({
+						opacity: 1,
+						zIndex: _.options.zIndex
+					});
+
+					if (callback) {
+						setTimeout(function () {
+
+							_.disableTransition(slideIndex);
+
+							callback.call();
+						}, _.options.speed);
+					}
+				}
+			};
+
+			Slick.prototype.fadeSlideOut = function (slideIndex) {
+
+				var _ = this;
+
+				if (_.cssTransitions === false) {
+
+					_.$slides.eq(slideIndex).animate({
+						opacity: 0,
+						zIndex: _.options.zIndex - 2
+					}, _.options.speed, _.options.easing);
+				} else {
+
+					_.applyTransition(slideIndex);
+
+					_.$slides.eq(slideIndex).css({
+						opacity: 0,
+						zIndex: _.options.zIndex - 2
+					});
+				}
+			};
+
+			Slick.prototype.filterSlides = Slick.prototype.slickFilter = function (filter) {
+
+				var _ = this;
+
+				if (filter !== null) {
+
+					_.$slidesCache = _.$slides;
+
+					_.unload();
+
+					_.$slideTrack.children(this.options.slide).detach();
+
+					_.$slidesCache.filter(filter).appendTo(_.$slideTrack);
+
+					_.reinit();
+				}
+			};
+
+			Slick.prototype.focusHandler = function () {
+
+				var _ = this;
+
+				_.$slider.off('focus.slick blur.slick').on('focus.slick blur.slick', '*', function (event) {
+
+					event.stopImmediatePropagation();
+					var $sf = $(this);
+
+					setTimeout(function () {
+
+						if (_.options.pauseOnFocus) {
+							_.focussed = $sf.is(':focus');
+							_.autoPlay();
+						}
+					}, 0);
+				});
+			};
+
+			Slick.prototype.getCurrent = Slick.prototype.slickCurrentSlide = function () {
+
+				var _ = this;
+				return _.currentSlide;
+			};
+
+			Slick.prototype.getDotCount = function () {
+
+				var _ = this;
+
+				var breakPoint = 0;
+				var counter = 0;
+				var pagerQty = 0;
+
+				if (_.options.infinite === true) {
+					if (_.slideCount <= _.options.slidesToShow) {
+						++pagerQty;
+					} else {
+						while (breakPoint < _.slideCount) {
+							++pagerQty;
+							breakPoint = counter + _.options.slidesToScroll;
+							counter += _.options.slidesToScroll <= _.options.slidesToShow ? _.options.slidesToScroll : _.options.slidesToShow;
+						}
+					}
+				} else if (_.options.centerMode === true) {
+					pagerQty = _.slideCount;
+				} else if (!_.options.asNavFor) {
+					pagerQty = 1 + Math.ceil((_.slideCount - _.options.slidesToShow) / _.options.slidesToScroll);
+				} else {
+					while (breakPoint < _.slideCount) {
+						++pagerQty;
+						breakPoint = counter + _.options.slidesToScroll;
+						counter += _.options.slidesToScroll <= _.options.slidesToShow ? _.options.slidesToScroll : _.options.slidesToShow;
+					}
+				}
+
+				return pagerQty - 1;
+			};
+
+			Slick.prototype.getLeft = function (slideIndex) {
+
+				var _ = this,
+				    targetLeft,
+				    verticalHeight,
+				    verticalOffset = 0,
+				    targetSlide,
+				    coef;
+
+				_.slideOffset = 0;
+				verticalHeight = _.$slides.first().outerHeight(true);
+
+				if (_.options.infinite === true) {
+					if (_.slideCount > _.options.slidesToShow) {
+						_.slideOffset = _.slideWidth * _.options.slidesToShow * -1;
+						coef = -1;
+
+						if (_.options.vertical === true && _.options.centerMode === true) {
+							if (_.options.slidesToShow === 2) {
+								coef = -1.5;
+							} else if (_.options.slidesToShow === 1) {
+								coef = -2;
+							}
+						}
+						verticalOffset = verticalHeight * _.options.slidesToShow * coef;
+					}
+					if (_.slideCount % _.options.slidesToScroll !== 0) {
+						if (slideIndex + _.options.slidesToScroll > _.slideCount && _.slideCount > _.options.slidesToShow) {
+							if (slideIndex > _.slideCount) {
+								_.slideOffset = (_.options.slidesToShow - (slideIndex - _.slideCount)) * _.slideWidth * -1;
+								verticalOffset = (_.options.slidesToShow - (slideIndex - _.slideCount)) * verticalHeight * -1;
+							} else {
+								_.slideOffset = _.slideCount % _.options.slidesToScroll * _.slideWidth * -1;
+								verticalOffset = _.slideCount % _.options.slidesToScroll * verticalHeight * -1;
+							}
+						}
+					}
+				} else {
+					if (slideIndex + _.options.slidesToShow > _.slideCount) {
+						_.slideOffset = (slideIndex + _.options.slidesToShow - _.slideCount) * _.slideWidth;
+						verticalOffset = (slideIndex + _.options.slidesToShow - _.slideCount) * verticalHeight;
+					}
+				}
+
+				if (_.slideCount <= _.options.slidesToShow) {
+					_.slideOffset = 0;
+					verticalOffset = 0;
+				}
+
+				if (_.options.centerMode === true && _.slideCount <= _.options.slidesToShow) {
+					_.slideOffset = _.slideWidth * Math.floor(_.options.slidesToShow) / 2 - _.slideWidth * _.slideCount / 2;
+				} else if (_.options.centerMode === true && _.options.infinite === true) {
+					_.slideOffset += _.slideWidth * Math.floor(_.options.slidesToShow / 2) - _.slideWidth;
+				} else if (_.options.centerMode === true) {
+					_.slideOffset = 0;
+					_.slideOffset += _.slideWidth * Math.floor(_.options.slidesToShow / 2);
+				}
+
+				if (_.options.vertical === false) {
+					targetLeft = slideIndex * _.slideWidth * -1 + _.slideOffset;
+				} else {
+					targetLeft = slideIndex * verticalHeight * -1 + verticalOffset;
+				}
+
+				if (_.options.variableWidth === true) {
+
+					if (_.slideCount <= _.options.slidesToShow || _.options.infinite === false) {
+						targetSlide = _.$slideTrack.children('.slick-slide').eq(slideIndex);
+					} else {
+						targetSlide = _.$slideTrack.children('.slick-slide').eq(slideIndex + _.options.slidesToShow);
+					}
+
+					if (_.options.rtl === true) {
+						if (targetSlide[0]) {
+							targetLeft = (_.$slideTrack.width() - targetSlide[0].offsetLeft - targetSlide.width()) * -1;
+						} else {
+							targetLeft = 0;
+						}
+					} else {
+						targetLeft = targetSlide[0] ? targetSlide[0].offsetLeft * -1 : 0;
+					}
+
+					if (_.options.centerMode === true) {
+						if (_.slideCount <= _.options.slidesToShow || _.options.infinite === false) {
+							targetSlide = _.$slideTrack.children('.slick-slide').eq(slideIndex);
+						} else {
+							targetSlide = _.$slideTrack.children('.slick-slide').eq(slideIndex + _.options.slidesToShow + 1);
+						}
+
+						if (_.options.rtl === true) {
+							if (targetSlide[0]) {
+								targetLeft = (_.$slideTrack.width() - targetSlide[0].offsetLeft - targetSlide.width()) * -1;
+							} else {
+								targetLeft = 0;
+							}
+						} else {
+							targetLeft = targetSlide[0] ? targetSlide[0].offsetLeft * -1 : 0;
+						}
+
+						targetLeft += (_.$list.width() - targetSlide.outerWidth()) / 2;
+					}
+				}
+
+				return targetLeft;
+			};
+
+			Slick.prototype.getOption = Slick.prototype.slickGetOption = function (option) {
+
+				var _ = this;
+
+				return _.options[option];
+			};
+
+			Slick.prototype.getNavigableIndexes = function () {
+
+				var _ = this,
+				    breakPoint = 0,
+				    counter = 0,
+				    indexes = [],
+				    max;
+
+				if (_.options.infinite === false) {
+					max = _.slideCount;
+				} else {
+					breakPoint = _.options.slidesToScroll * -1;
+					counter = _.options.slidesToScroll * -1;
+					max = _.slideCount * 2;
+				}
+
+				while (breakPoint < max) {
+					indexes.push(breakPoint);
+					breakPoint = counter + _.options.slidesToScroll;
+					counter += _.options.slidesToScroll <= _.options.slidesToShow ? _.options.slidesToScroll : _.options.slidesToShow;
+				}
+
+				return indexes;
+			};
+
+			Slick.prototype.getSlick = function () {
+
+				return this;
+			};
+
+			Slick.prototype.getSlideCount = function () {
+
+				var _ = this,
+				    slidesTraversed,
+				    swipedSlide,
+				    centerOffset;
+
+				centerOffset = _.options.centerMode === true ? _.slideWidth * Math.floor(_.options.slidesToShow / 2) : 0;
+
+				if (_.options.swipeToSlide === true) {
+					_.$slideTrack.find('.slick-slide').each(function (index, slide) {
+						if (slide.offsetLeft - centerOffset + $(slide).outerWidth() / 2 > _.swipeLeft * -1) {
+							swipedSlide = slide;
+							return false;
+						}
+					});
+
+					slidesTraversed = Math.abs($(swipedSlide).attr('data-slick-index') - _.currentSlide) || 1;
+
+					return slidesTraversed;
+				} else {
+					return _.options.slidesToScroll;
+				}
+			};
+
+			Slick.prototype.goTo = Slick.prototype.slickGoTo = function (slide, dontAnimate) {
+
+				var _ = this;
+
+				_.changeSlide({
+					data: {
+						message: 'index',
+						index: parseInt(slide)
+					}
+				}, dontAnimate);
+			};
+
+			Slick.prototype.init = function (creation) {
+
+				var _ = this;
+
+				if (!$(_.$slider).hasClass('slick-initialized')) {
+
+					$(_.$slider).addClass('slick-initialized');
+
+					_.buildRows();
+					_.buildOut();
+					_.setProps();
+					_.startLoad();
+					_.loadSlider();
+					_.initializeEvents();
+					_.updateArrows();
+					_.updateDots();
+					_.checkResponsive(true);
+					_.focusHandler();
+				}
+
+				if (creation) {
+					_.$slider.trigger('init', [_]);
+				}
+
+				if (_.options.accessibility === true) {
+					_.initADA();
+				}
+
+				if (_.options.autoplay) {
+
+					_.paused = false;
+					_.autoPlay();
+				}
+			};
+
+			Slick.prototype.initADA = function () {
+				var _ = this,
+				    numDotGroups = Math.ceil(_.slideCount / _.options.slidesToShow),
+				    tabControlIndexes = _.getNavigableIndexes().filter(function (val) {
+					return val >= 0 && val < _.slideCount;
+				});
+
+				_.$slides.add(_.$slideTrack.find('.slick-cloned')).attr({
+					'aria-hidden': 'true',
+					'tabindex': '-1'
+				}).find('a, input, button, select').attr({
+					'tabindex': '-1'
+				});
+
+				if (_.$dots !== null) {
+					_.$slides.not(_.$slideTrack.find('.slick-cloned')).each(function (i) {
+						var slideControlIndex = tabControlIndexes.indexOf(i);
+
+						$(this).attr({
+							'role': 'tabpanel',
+							'id': 'slick-slide' + _.instanceUid + i,
+							'tabindex': -1
+						});
+
+						if (slideControlIndex !== -1) {
+							var ariaButtonControl = 'slick-slide-control' + _.instanceUid + slideControlIndex;
+							if ($('#' + ariaButtonControl).length) {
+								$(this).attr({
+									'aria-describedby': ariaButtonControl
+								});
+							}
+						}
+					});
+
+					_.$dots.attr('role', 'tablist').find('li').each(function (i) {
+						var mappedSlideIndex = tabControlIndexes[i];
+
+						$(this).attr({
+							'role': 'presentation'
+						});
+
+						$(this).find('button').first().attr({
+							'role': 'tab',
+							'id': 'slick-slide-control' + _.instanceUid + i,
+							'aria-controls': 'slick-slide' + _.instanceUid + mappedSlideIndex,
+							'aria-label': i + 1 + ' of ' + numDotGroups,
+							'aria-selected': null,
+							'tabindex': '-1'
+						});
+					}).eq(_.currentSlide).find('button').attr({
+						'aria-selected': 'true',
+						'tabindex': '0'
+					}).end();
+				}
+
+				for (var i = _.currentSlide, max = i + _.options.slidesToShow; i < max; i++) {
+					if (_.options.focusOnChange) {
+						_.$slides.eq(i).attr({ 'tabindex': '0' });
+					} else {
+						_.$slides.eq(i).removeAttr('tabindex');
+					}
+				}
+
+				_.activateADA();
+			};
+
+			Slick.prototype.initArrowEvents = function () {
+
+				var _ = this;
+
+				if (_.options.arrows === true && _.slideCount > _.options.slidesToShow) {
+					_.$prevArrow.off('click.slick').on('click.slick', {
+						message: 'previous'
+					}, _.changeSlide);
+					_.$nextArrow.off('click.slick').on('click.slick', {
+						message: 'next'
+					}, _.changeSlide);
+
+					if (_.options.accessibility === true) {
+						_.$prevArrow.on('keydown.slick', _.keyHandler);
+						_.$nextArrow.on('keydown.slick', _.keyHandler);
+					}
+				}
+			};
+
+			Slick.prototype.initDotEvents = function () {
+
+				var _ = this;
+
+				if (_.options.dots === true && _.slideCount > _.options.slidesToShow) {
+					$('li', _.$dots).on('click.slick', {
+						message: 'index'
+					}, _.changeSlide);
+
+					if (_.options.accessibility === true) {
+						_.$dots.on('keydown.slick', _.keyHandler);
+					}
+				}
+
+				if (_.options.dots === true && _.options.pauseOnDotsHover === true && _.slideCount > _.options.slidesToShow) {
+
+					$('li', _.$dots).on('mouseenter.slick', $.proxy(_.interrupt, _, true)).on('mouseleave.slick', $.proxy(_.interrupt, _, false));
+				}
+			};
+
+			Slick.prototype.initSlideEvents = function () {
+
+				var _ = this;
+
+				if (_.options.pauseOnHover) {
+
+					_.$list.on('mouseenter.slick', $.proxy(_.interrupt, _, true));
+					_.$list.on('mouseleave.slick', $.proxy(_.interrupt, _, false));
+				}
+			};
+
+			Slick.prototype.initializeEvents = function () {
+
+				var _ = this;
+
+				_.initArrowEvents();
+
+				_.initDotEvents();
+				_.initSlideEvents();
+
+				_.$list.on('touchstart.slick mousedown.slick', {
+					action: 'start'
+				}, _.swipeHandler);
+				_.$list.on('touchmove.slick mousemove.slick', {
+					action: 'move'
+				}, _.swipeHandler);
+				_.$list.on('touchend.slick mouseup.slick', {
+					action: 'end'
+				}, _.swipeHandler);
+				_.$list.on('touchcancel.slick mouseleave.slick', {
+					action: 'end'
+				}, _.swipeHandler);
+
+				_.$list.on('click.slick', _.clickHandler);
+
+				$(document).on(_.visibilityChange, $.proxy(_.visibility, _));
+
+				if (_.options.accessibility === true) {
+					_.$list.on('keydown.slick', _.keyHandler);
+				}
+
+				if (_.options.focusOnSelect === true) {
+					$(_.$slideTrack).children().on('click.slick', _.selectHandler);
+				}
+
+				$(window).on('orientationchange.slick.slick-' + _.instanceUid, $.proxy(_.orientationChange, _));
+
+				$(window).on('resize.slick.slick-' + _.instanceUid, $.proxy(_.resize, _));
+
+				$('[draggable!=true]', _.$slideTrack).on('dragstart', _.preventDefault);
+
+				$(window).on('load.slick.slick-' + _.instanceUid, _.setPosition);
+				$(_.setPosition);
+			};
+
+			Slick.prototype.initUI = function () {
+
+				var _ = this;
+
+				if (_.options.arrows === true && _.slideCount > _.options.slidesToShow) {
+
+					_.$prevArrow.show();
+					_.$nextArrow.show();
+				}
+
+				if (_.options.dots === true && _.slideCount > _.options.slidesToShow) {
+
+					_.$dots.show();
+				}
+			};
+
+			Slick.prototype.keyHandler = function (event) {
+
+				var _ = this;
+				//Dont slide if the cursor is inside the form fields and arrow keys are pressed
+				if (!event.target.tagName.match('TEXTAREA|INPUT|SELECT')) {
+					if (event.keyCode === 37 && _.options.accessibility === true) {
+						_.changeSlide({
+							data: {
+								message: _.options.rtl === true ? 'next' : 'previous'
+							}
+						});
+					} else if (event.keyCode === 39 && _.options.accessibility === true) {
+						_.changeSlide({
+							data: {
+								message: _.options.rtl === true ? 'previous' : 'next'
+							}
+						});
+					}
+				}
+			};
+
+			Slick.prototype.lazyLoad = function () {
+
+				var _ = this,
+				    loadRange,
+				    cloneRange,
+				    rangeStart,
+				    rangeEnd;
+
+				function loadImages(imagesScope) {
+
+					$('img[data-lazy]', imagesScope).each(function () {
+
+						var image = $(this),
+						    imageSource = $(this).attr('data-lazy'),
+						    imageSrcSet = $(this).attr('data-srcset'),
+						    imageSizes = $(this).attr('data-sizes') || _.$slider.attr('data-sizes'),
+						    imageToLoad = document.createElement('img');
+
+						imageToLoad.onload = function () {
+
+							image.animate({ opacity: 0 }, 100, function () {
+
+								if (imageSrcSet) {
+									image.attr('srcset', imageSrcSet);
+
+									if (imageSizes) {
+										image.attr('sizes', imageSizes);
+									}
+								}
+
+								image.attr('src', imageSource).animate({ opacity: 1 }, 200, function () {
+									image.removeAttr('data-lazy data-srcset data-sizes').removeClass('slick-loading');
+								});
+								_.$slider.trigger('lazyLoaded', [_, image, imageSource]);
+							});
+						};
+
+						imageToLoad.onerror = function () {
+
+							image.removeAttr('data-lazy').removeClass('slick-loading').addClass('slick-lazyload-error');
+
+							_.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+						};
+
+						imageToLoad.src = imageSource;
+					});
+				}
+
+				if (_.options.centerMode === true) {
+					if (_.options.infinite === true) {
+						rangeStart = _.currentSlide + (_.options.slidesToShow / 2 + 1);
+						rangeEnd = rangeStart + _.options.slidesToShow + 2;
+					} else {
+						rangeStart = Math.max(0, _.currentSlide - (_.options.slidesToShow / 2 + 1));
+						rangeEnd = 2 + (_.options.slidesToShow / 2 + 1) + _.currentSlide;
+					}
+				} else {
+					rangeStart = _.options.infinite ? _.options.slidesToShow + _.currentSlide : _.currentSlide;
+					rangeEnd = Math.ceil(rangeStart + _.options.slidesToShow);
+					if (_.options.fade === true) {
+						if (rangeStart > 0) rangeStart--;
+						if (rangeEnd <= _.slideCount) rangeEnd++;
+					}
+				}
+
+				loadRange = _.$slider.find('.slick-slide').slice(rangeStart, rangeEnd);
+
+				if (_.options.lazyLoad === 'anticipated') {
+					var prevSlide = rangeStart - 1,
+					    nextSlide = rangeEnd,
+					    $slides = _.$slider.find('.slick-slide');
+
+					for (var i = 0; i < _.options.slidesToScroll; i++) {
+						if (prevSlide < 0) prevSlide = _.slideCount - 1;
+						loadRange = loadRange.add($slides.eq(prevSlide));
+						loadRange = loadRange.add($slides.eq(nextSlide));
+						prevSlide--;
+						nextSlide++;
+					}
+				}
+
+				loadImages(loadRange);
+
+				if (_.slideCount <= _.options.slidesToShow) {
+					cloneRange = _.$slider.find('.slick-slide');
+					loadImages(cloneRange);
+				} else if (_.currentSlide >= _.slideCount - _.options.slidesToShow) {
+					cloneRange = _.$slider.find('.slick-cloned').slice(0, _.options.slidesToShow);
+					loadImages(cloneRange);
+				} else if (_.currentSlide === 0) {
+					cloneRange = _.$slider.find('.slick-cloned').slice(_.options.slidesToShow * -1);
+					loadImages(cloneRange);
+				}
+			};
+
+			Slick.prototype.loadSlider = function () {
+
+				var _ = this;
+
+				_.setPosition();
+
+				_.$slideTrack.css({
+					opacity: 1
+				});
+
+				_.$slider.removeClass('slick-loading');
+
+				_.initUI();
+
+				if (_.options.lazyLoad === 'progressive') {
+					_.progressiveLazyLoad();
+				}
+			};
+
+			Slick.prototype.next = Slick.prototype.slickNext = function () {
+
+				var _ = this;
+
+				_.changeSlide({
+					data: {
+						message: 'next'
+					}
+				});
+			};
+
+			Slick.prototype.orientationChange = function () {
+
+				var _ = this;
+
+				_.checkResponsive();
+				_.setPosition();
+			};
+
+			Slick.prototype.pause = Slick.prototype.slickPause = function () {
+
+				var _ = this;
+
+				_.autoPlayClear();
+				_.paused = true;
+			};
+
+			Slick.prototype.play = Slick.prototype.slickPlay = function () {
+
+				var _ = this;
+
+				_.autoPlay();
+				_.options.autoplay = true;
+				_.paused = false;
+				_.focussed = false;
+				_.interrupted = false;
+			};
+
+			Slick.prototype.postSlide = function (index) {
+
+				var _ = this;
+
+				if (!_.unslicked) {
+
+					_.$slider.trigger('afterChange', [_, index]);
+
+					_.animating = false;
+
+					if (_.slideCount > _.options.slidesToShow) {
+						_.setPosition();
+					}
+
+					_.swipeLeft = null;
+
+					if (_.options.autoplay) {
+						_.autoPlay();
+					}
+
+					if (_.options.accessibility === true) {
+						_.initADA();
+
+						if (_.options.focusOnChange) {
+							var $currentSlide = $(_.$slides.get(_.currentSlide));
+							$currentSlide.attr('tabindex', 0).focus();
+						}
+					}
+				}
+			};
+
+			Slick.prototype.prev = Slick.prototype.slickPrev = function () {
+
+				var _ = this;
+
+				_.changeSlide({
+					data: {
+						message: 'previous'
+					}
+				});
+			};
+
+			Slick.prototype.preventDefault = function (event) {
+
+				event.preventDefault();
+			};
+
+			Slick.prototype.progressiveLazyLoad = function (tryCount) {
+
+				tryCount = tryCount || 1;
+
+				var _ = this,
+				    $imgsToLoad = $('img[data-lazy]', _.$slider),
+				    image,
+				    imageSource,
+				    imageSrcSet,
+				    imageSizes,
+				    imageToLoad;
+
+				if ($imgsToLoad.length) {
+
+					image = $imgsToLoad.first();
+					imageSource = image.attr('data-lazy');
+					imageSrcSet = image.attr('data-srcset');
+					imageSizes = image.attr('data-sizes') || _.$slider.attr('data-sizes');
+					imageToLoad = document.createElement('img');
+
+					imageToLoad.onload = function () {
+
+						if (imageSrcSet) {
+							image.attr('srcset', imageSrcSet);
+
+							if (imageSizes) {
+								image.attr('sizes', imageSizes);
+							}
+						}
+
+						image.attr('src', imageSource).removeAttr('data-lazy data-srcset data-sizes').removeClass('slick-loading');
+
+						if (_.options.adaptiveHeight === true) {
+							_.setPosition();
+						}
+
+						_.$slider.trigger('lazyLoaded', [_, image, imageSource]);
+						_.progressiveLazyLoad();
+					};
+
+					imageToLoad.onerror = function () {
+
+						if (tryCount < 3) {
+
+							/**
+        * try to load the image 3 times,
+        * leave a slight delay so we don't get
+        * servers blocking the request.
+        */
+							setTimeout(function () {
+								_.progressiveLazyLoad(tryCount + 1);
+							}, 500);
+						} else {
+
+							image.removeAttr('data-lazy').removeClass('slick-loading').addClass('slick-lazyload-error');
+
+							_.$slider.trigger('lazyLoadError', [_, image, imageSource]);
+
+							_.progressiveLazyLoad();
+						}
+					};
+
+					imageToLoad.src = imageSource;
+				} else {
+
+					_.$slider.trigger('allImagesLoaded', [_]);
+				}
+			};
+
+			Slick.prototype.refresh = function (initializing) {
+
+				var _ = this,
+				    currentSlide,
+				    lastVisibleIndex;
+
+				lastVisibleIndex = _.slideCount - _.options.slidesToShow;
+
+				// in non-infinite sliders, we don't want to go past the
+				// last visible index.
+				if (!_.options.infinite && _.currentSlide > lastVisibleIndex) {
+					_.currentSlide = lastVisibleIndex;
+				}
+
+				// if less slides than to show, go to start.
+				if (_.slideCount <= _.options.slidesToShow) {
+					_.currentSlide = 0;
+				}
+
+				currentSlide = _.currentSlide;
+
+				_.destroy(true);
+
+				$.extend(_, _.initials, { currentSlide: currentSlide });
+
+				_.init();
+
+				if (!initializing) {
+
+					_.changeSlide({
+						data: {
+							message: 'index',
+							index: currentSlide
+						}
+					}, false);
+				}
+			};
+
+			Slick.prototype.registerBreakpoints = function () {
+
+				var _ = this,
+				    breakpoint,
+				    currentBreakpoint,
+				    l,
+				    responsiveSettings = _.options.responsive || null;
+
+				if ($.type(responsiveSettings) === 'array' && responsiveSettings.length) {
+
+					_.respondTo = _.options.respondTo || 'window';
+
+					for (breakpoint in responsiveSettings) {
+
+						l = _.breakpoints.length - 1;
+
+						if (responsiveSettings.hasOwnProperty(breakpoint)) {
+							currentBreakpoint = responsiveSettings[breakpoint].breakpoint;
+
+							// loop through the breakpoints and cut out any existing
+							// ones with the same breakpoint number, we don't want dupes.
+							while (l >= 0) {
+								if (_.breakpoints[l] && _.breakpoints[l] === currentBreakpoint) {
+									_.breakpoints.splice(l, 1);
+								}
+								l--;
+							}
+
+							_.breakpoints.push(currentBreakpoint);
+							_.breakpointSettings[currentBreakpoint] = responsiveSettings[breakpoint].settings;
+						}
+					}
+
+					_.breakpoints.sort(function (a, b) {
+						return _.options.mobileFirst ? a - b : b - a;
+					});
+				}
+			};
+
+			Slick.prototype.reinit = function () {
+
+				var _ = this;
+
+				_.$slides = _.$slideTrack.children(_.options.slide).addClass('slick-slide');
+
+				_.slideCount = _.$slides.length;
+
+				if (_.currentSlide >= _.slideCount && _.currentSlide !== 0) {
+					_.currentSlide = _.currentSlide - _.options.slidesToScroll;
+				}
+
+				if (_.slideCount <= _.options.slidesToShow) {
+					_.currentSlide = 0;
+				}
+
+				_.registerBreakpoints();
+
+				_.setProps();
+				_.setupInfinite();
+				_.buildArrows();
+				_.updateArrows();
+				_.initArrowEvents();
+				_.buildDots();
+				_.updateDots();
+				_.initDotEvents();
+				_.cleanUpSlideEvents();
+				_.initSlideEvents();
+
+				_.checkResponsive(false, true);
+
+				if (_.options.focusOnSelect === true) {
+					$(_.$slideTrack).children().on('click.slick', _.selectHandler);
+				}
+
+				_.setSlideClasses(typeof _.currentSlide === 'number' ? _.currentSlide : 0);
+
+				_.setPosition();
+				_.focusHandler();
+
+				_.paused = !_.options.autoplay;
+				_.autoPlay();
+
+				_.$slider.trigger('reInit', [_]);
+			};
+
+			Slick.prototype.resize = function () {
+
+				var _ = this;
+
+				if ($(window).width() !== _.windowWidth) {
+					clearTimeout(_.windowDelay);
+					_.windowDelay = window.setTimeout(function () {
+						_.windowWidth = $(window).width();
+						_.checkResponsive();
+						if (!_.unslicked) {
+							_.setPosition();
+						}
+					}, 50);
+				}
+			};
+
+			Slick.prototype.removeSlide = Slick.prototype.slickRemove = function (index, removeBefore, removeAll) {
+
+				var _ = this;
+
+				if (typeof index === 'boolean') {
+					removeBefore = index;
+					index = removeBefore === true ? 0 : _.slideCount - 1;
+				} else {
+					index = removeBefore === true ? --index : index;
+				}
+
+				if (_.slideCount < 1 || index < 0 || index > _.slideCount - 1) {
+					return false;
+				}
+
+				_.unload();
+
+				if (removeAll === true) {
+					_.$slideTrack.children().remove();
+				} else {
+					_.$slideTrack.children(this.options.slide).eq(index).remove();
+				}
+
+				_.$slides = _.$slideTrack.children(this.options.slide);
+
+				_.$slideTrack.children(this.options.slide).detach();
+
+				_.$slideTrack.append(_.$slides);
+
+				_.$slidesCache = _.$slides;
+
+				_.reinit();
+			};
+
+			Slick.prototype.setCSS = function (position) {
+
+				var _ = this,
+				    positionProps = {},
+				    x,
+				    y;
+
+				if (_.options.rtl === true) {
+					position = -position;
+				}
+				x = _.positionProp == 'left' ? Math.ceil(position) + 'px' : '0px';
+				y = _.positionProp == 'top' ? Math.ceil(position) + 'px' : '0px';
+
+				positionProps[_.positionProp] = position;
+
+				if (_.transformsEnabled === false) {
+					_.$slideTrack.css(positionProps);
+				} else {
+					positionProps = {};
+					if (_.cssTransitions === false) {
+						positionProps[_.animType] = 'translate(' + x + ', ' + y + ')';
+						_.$slideTrack.css(positionProps);
+					} else {
+						positionProps[_.animType] = 'translate3d(' + x + ', ' + y + ', 0px)';
+						_.$slideTrack.css(positionProps);
+					}
+				}
+			};
+
+			Slick.prototype.setDimensions = function () {
+
+				var _ = this;
+
+				if (_.options.vertical === false) {
+					if (_.options.centerMode === true) {
+						_.$list.css({
+							padding: '0px ' + _.options.centerPadding
+						});
+					}
+				} else {
+					_.$list.height(_.$slides.first().outerHeight(true) * _.options.slidesToShow);
+					if (_.options.centerMode === true) {
+						_.$list.css({
+							padding: _.options.centerPadding + ' 0px'
+						});
+					}
+				}
+
+				_.listWidth = _.$list.width();
+				_.listHeight = _.$list.height();
+
+				if (_.options.vertical === false && _.options.variableWidth === false) {
+					_.slideWidth = Math.ceil(_.listWidth / _.options.slidesToShow);
+					_.$slideTrack.width(Math.ceil(_.slideWidth * _.$slideTrack.children('.slick-slide').length));
+				} else if (_.options.variableWidth === true) {
+					_.$slideTrack.width(5000 * _.slideCount);
+				} else {
+					_.slideWidth = Math.ceil(_.listWidth);
+					_.$slideTrack.height(Math.ceil(_.$slides.first().outerHeight(true) * _.$slideTrack.children('.slick-slide').length));
+				}
+
+				var offset = _.$slides.first().outerWidth(true) - _.$slides.first().width();
+				if (_.options.variableWidth === false) _.$slideTrack.children('.slick-slide').width(_.slideWidth - offset);
+			};
+
+			Slick.prototype.setFade = function () {
+
+				var _ = this,
+				    targetLeft;
+
+				_.$slides.each(function (index, element) {
+					targetLeft = _.slideWidth * index * -1;
+					if (_.options.rtl === true) {
+						$(element).css({
+							position: 'relative',
+							right: targetLeft,
+							top: 0,
+							zIndex: _.options.zIndex - 2,
+							opacity: 0
+						});
+					} else {
+						$(element).css({
+							position: 'relative',
+							left: targetLeft,
+							top: 0,
+							zIndex: _.options.zIndex - 2,
+							opacity: 0
+						});
+					}
+				});
+
+				_.$slides.eq(_.currentSlide).css({
+					zIndex: _.options.zIndex - 1,
+					opacity: 1
+				});
+			};
+
+			Slick.prototype.setHeight = function () {
+
+				var _ = this;
+
+				if (_.options.slidesToShow === 1 && _.options.adaptiveHeight === true && _.options.vertical === false) {
+					var targetHeight = _.$slides.eq(_.currentSlide).outerHeight(true);
+					_.$list.css('height', targetHeight);
+				}
+			};
+
+			Slick.prototype.setOption = Slick.prototype.slickSetOption = function () {
+
+				/**
+     * accepts arguments in format of:
+     *
+     *  - for changing a single option's value:
+     *     .slick("setOption", option, value, refresh )
+     *
+     *  - for changing a set of responsive options:
+     *     .slick("setOption", 'responsive', [{}, ...], refresh )
+     *
+     *  - for updating multiple values at once (not responsive)
+     *     .slick("setOption", { 'option': value, ... }, refresh )
+     */
+
+				var _ = this,
+				    l,
+				    item,
+				    option,
+				    value,
+				    refresh = false,
+				    type;
+
+				if ($.type(arguments[0]) === 'object') {
+
+					option = arguments[0];
+					refresh = arguments[1];
+					type = 'multiple';
+				} else if ($.type(arguments[0]) === 'string') {
+
+					option = arguments[0];
+					value = arguments[1];
+					refresh = arguments[2];
+
+					if (arguments[0] === 'responsive' && $.type(arguments[1]) === 'array') {
+
+						type = 'responsive';
+					} else if (typeof arguments[1] !== 'undefined') {
+
+						type = 'single';
+					}
+				}
+
+				if (type === 'single') {
+
+					_.options[option] = value;
+				} else if (type === 'multiple') {
+
+					$.each(option, function (opt, val) {
+
+						_.options[opt] = val;
+					});
+				} else if (type === 'responsive') {
+
+					for (item in value) {
+
+						if ($.type(_.options.responsive) !== 'array') {
+
+							_.options.responsive = [value[item]];
+						} else {
+
+							l = _.options.responsive.length - 1;
+
+							// loop through the responsive object and splice out duplicates.
+							while (l >= 0) {
+
+								if (_.options.responsive[l].breakpoint === value[item].breakpoint) {
+
+									_.options.responsive.splice(l, 1);
+								}
+
+								l--;
+							}
+
+							_.options.responsive.push(value[item]);
+						}
+					}
+				}
+
+				if (refresh) {
+
+					_.unload();
+					_.reinit();
+				}
+			};
+
+			Slick.prototype.setPosition = function () {
+
+				var _ = this;
+
+				_.setDimensions();
+
+				_.setHeight();
+
+				if (_.options.fade === false) {
+					_.setCSS(_.getLeft(_.currentSlide));
+				} else {
+					_.setFade();
+				}
+
+				_.$slider.trigger('setPosition', [_]);
+			};
+
+			Slick.prototype.setProps = function () {
+
+				var _ = this,
+				    bodyStyle = document.body.style;
+
+				_.positionProp = _.options.vertical === true ? 'top' : 'left';
+
+				if (_.positionProp === 'top') {
+					_.$slider.addClass('slick-vertical');
+				} else {
+					_.$slider.removeClass('slick-vertical');
+				}
+
+				if (bodyStyle.WebkitTransition !== undefined || bodyStyle.MozTransition !== undefined || bodyStyle.msTransition !== undefined) {
+					if (_.options.useCSS === true) {
+						_.cssTransitions = true;
+					}
+				}
+
+				if (_.options.fade) {
+					if (typeof _.options.zIndex === 'number') {
+						if (_.options.zIndex < 3) {
+							_.options.zIndex = 3;
+						}
+					} else {
+						_.options.zIndex = _.defaults.zIndex;
+					}
+				}
+
+				if (bodyStyle.OTransform !== undefined) {
+					_.animType = 'OTransform';
+					_.transformType = '-o-transform';
+					_.transitionType = 'OTransition';
+					if (bodyStyle.perspectiveProperty === undefined && bodyStyle.webkitPerspective === undefined) _.animType = false;
+				}
+				if (bodyStyle.MozTransform !== undefined) {
+					_.animType = 'MozTransform';
+					_.transformType = '-moz-transform';
+					_.transitionType = 'MozTransition';
+					if (bodyStyle.perspectiveProperty === undefined && bodyStyle.MozPerspective === undefined) _.animType = false;
+				}
+				if (bodyStyle.webkitTransform !== undefined) {
+					_.animType = 'webkitTransform';
+					_.transformType = '-webkit-transform';
+					_.transitionType = 'webkitTransition';
+					if (bodyStyle.perspectiveProperty === undefined && bodyStyle.webkitPerspective === undefined) _.animType = false;
+				}
+				if (bodyStyle.msTransform !== undefined) {
+					_.animType = 'msTransform';
+					_.transformType = '-ms-transform';
+					_.transitionType = 'msTransition';
+					if (bodyStyle.msTransform === undefined) _.animType = false;
+				}
+				if (bodyStyle.transform !== undefined && _.animType !== false) {
+					_.animType = 'transform';
+					_.transformType = 'transform';
+					_.transitionType = 'transition';
+				}
+				_.transformsEnabled = _.options.useTransform && _.animType !== null && _.animType !== false;
+			};
+
+			Slick.prototype.setSlideClasses = function (index) {
+
+				var _ = this,
+				    centerOffset,
+				    allSlides,
+				    indexOffset,
+				    remainder;
+
+				allSlides = _.$slider.find('.slick-slide').removeClass('slick-active slick-center slick-current').attr('aria-hidden', 'true');
+
+				_.$slides.eq(index).addClass('slick-current');
+
+				if (_.options.centerMode === true) {
+
+					var evenCoef = _.options.slidesToShow % 2 === 0 ? 1 : 0;
+
+					centerOffset = Math.floor(_.options.slidesToShow / 2);
+
+					if (_.options.infinite === true) {
+
+						if (index >= centerOffset && index <= _.slideCount - 1 - centerOffset) {
+							_.$slides.slice(index - centerOffset + evenCoef, index + centerOffset + 1).addClass('slick-active').attr('aria-hidden', 'false');
+						} else {
+
+							indexOffset = _.options.slidesToShow + index;
+							allSlides.slice(indexOffset - centerOffset + 1 + evenCoef, indexOffset + centerOffset + 2).addClass('slick-active').attr('aria-hidden', 'false');
+						}
+
+						if (index === 0) {
+
+							allSlides.eq(allSlides.length - 1 - _.options.slidesToShow).addClass('slick-center');
+						} else if (index === _.slideCount - 1) {
+
+							allSlides.eq(_.options.slidesToShow).addClass('slick-center');
+						}
+					}
+
+					_.$slides.eq(index).addClass('slick-center');
+				} else {
+
+					if (index >= 0 && index <= _.slideCount - _.options.slidesToShow) {
+
+						_.$slides.slice(index, index + _.options.slidesToShow).addClass('slick-active').attr('aria-hidden', 'false');
+					} else if (allSlides.length <= _.options.slidesToShow) {
+
+						allSlides.addClass('slick-active').attr('aria-hidden', 'false');
+					} else {
+
+						remainder = _.slideCount % _.options.slidesToShow;
+						indexOffset = _.options.infinite === true ? _.options.slidesToShow + index : index;
+
+						if (_.options.slidesToShow == _.options.slidesToScroll && _.slideCount - index < _.options.slidesToShow) {
+
+							allSlides.slice(indexOffset - (_.options.slidesToShow - remainder), indexOffset + remainder).addClass('slick-active').attr('aria-hidden', 'false');
+						} else {
+
+							allSlides.slice(indexOffset, indexOffset + _.options.slidesToShow).addClass('slick-active').attr('aria-hidden', 'false');
+						}
+					}
+				}
+
+				if (_.options.lazyLoad === 'ondemand' || _.options.lazyLoad === 'anticipated') {
+					_.lazyLoad();
+				}
+			};
+
+			Slick.prototype.setupInfinite = function () {
+
+				var _ = this,
+				    i,
+				    slideIndex,
+				    infiniteCount;
+
+				if (_.options.fade === true) {
+					_.options.centerMode = false;
+				}
+
+				if (_.options.infinite === true && _.options.fade === false) {
+
+					slideIndex = null;
+
+					if (_.slideCount > _.options.slidesToShow) {
+
+						if (_.options.centerMode === true) {
+							infiniteCount = _.options.slidesToShow + 1;
+						} else {
+							infiniteCount = _.options.slidesToShow;
+						}
+
+						for (i = _.slideCount; i > _.slideCount - infiniteCount; i -= 1) {
+							slideIndex = i - 1;
+							$(_.$slides[slideIndex]).clone(true).attr('id', '').attr('data-slick-index', slideIndex - _.slideCount).prependTo(_.$slideTrack).addClass('slick-cloned');
+						}
+						for (i = 0; i < infiniteCount + _.slideCount; i += 1) {
+							slideIndex = i;
+							$(_.$slides[slideIndex]).clone(true).attr('id', '').attr('data-slick-index', slideIndex + _.slideCount).appendTo(_.$slideTrack).addClass('slick-cloned');
+						}
+						_.$slideTrack.find('.slick-cloned').find('[id]').each(function () {
+							$(this).attr('id', '');
+						});
+					}
+				}
+			};
+
+			Slick.prototype.interrupt = function (toggle) {
+
+				var _ = this;
+
+				if (!toggle) {
+					_.autoPlay();
+				}
+				_.interrupted = toggle;
+			};
+
+			Slick.prototype.selectHandler = function (event) {
+
+				var _ = this;
+
+				var targetElement = $(event.target).is('.slick-slide') ? $(event.target) : $(event.target).parents('.slick-slide');
+
+				var index = parseInt(targetElement.attr('data-slick-index'));
+
+				if (!index) index = 0;
+
+				if (_.slideCount <= _.options.slidesToShow) {
+
+					_.slideHandler(index, false, true);
+					return;
+				}
+
+				_.slideHandler(index);
+			};
+
+			Slick.prototype.slideHandler = function (index, sync, dontAnimate) {
+
+				var targetSlide,
+				    animSlide,
+				    oldSlide,
+				    slideLeft,
+				    targetLeft = null,
+				    _ = this,
+				    navTarget;
+
+				sync = sync || false;
+
+				if (_.animating === true && _.options.waitForAnimate === true) {
+					return;
+				}
+
+				if (_.options.fade === true && _.currentSlide === index) {
+					return;
+				}
+
+				if (sync === false) {
+					_.asNavFor(index);
+				}
+
+				targetSlide = index;
+				targetLeft = _.getLeft(targetSlide);
+				slideLeft = _.getLeft(_.currentSlide);
+
+				_.currentLeft = _.swipeLeft === null ? slideLeft : _.swipeLeft;
+
+				if (_.options.infinite === false && _.options.centerMode === false && (index < 0 || index > _.getDotCount() * _.options.slidesToScroll)) {
+					if (_.options.fade === false) {
+						targetSlide = _.currentSlide;
+						if (dontAnimate !== true && _.slideCount > _.options.slidesToShow) {
+							_.animateSlide(slideLeft, function () {
+								_.postSlide(targetSlide);
+							});
+						} else {
+							_.postSlide(targetSlide);
+						}
+					}
+					return;
+				} else if (_.options.infinite === false && _.options.centerMode === true && (index < 0 || index > _.slideCount - _.options.slidesToScroll)) {
+					if (_.options.fade === false) {
+						targetSlide = _.currentSlide;
+						if (dontAnimate !== true && _.slideCount > _.options.slidesToShow) {
+							_.animateSlide(slideLeft, function () {
+								_.postSlide(targetSlide);
+							});
+						} else {
+							_.postSlide(targetSlide);
+						}
+					}
+					return;
+				}
+
+				if (_.options.autoplay) {
+					clearInterval(_.autoPlayTimer);
+				}
+
+				if (targetSlide < 0) {
+					if (_.slideCount % _.options.slidesToScroll !== 0) {
+						animSlide = _.slideCount - _.slideCount % _.options.slidesToScroll;
+					} else {
+						animSlide = _.slideCount + targetSlide;
+					}
+				} else if (targetSlide >= _.slideCount) {
+					if (_.slideCount % _.options.slidesToScroll !== 0) {
+						animSlide = 0;
+					} else {
+						animSlide = targetSlide - _.slideCount;
+					}
+				} else {
+					animSlide = targetSlide;
+				}
+
+				_.animating = true;
+
+				_.$slider.trigger('beforeChange', [_, _.currentSlide, animSlide]);
+
+				oldSlide = _.currentSlide;
+				_.currentSlide = animSlide;
+
+				_.setSlideClasses(_.currentSlide);
+
+				if (_.options.asNavFor) {
+
+					navTarget = _.getNavTarget();
+					navTarget = navTarget.slick('getSlick');
+
+					if (navTarget.slideCount <= navTarget.options.slidesToShow) {
+						navTarget.setSlideClasses(_.currentSlide);
+					}
+				}
+
+				_.updateDots();
+				_.updateArrows();
+
+				if (_.options.fade === true) {
+					if (dontAnimate !== true) {
+
+						_.fadeSlideOut(oldSlide);
+
+						_.fadeSlide(animSlide, function () {
+							_.postSlide(animSlide);
+						});
+					} else {
+						_.postSlide(animSlide);
+					}
+					_.animateHeight();
+					return;
+				}
+
+				if (dontAnimate !== true && _.slideCount > _.options.slidesToShow) {
+					_.animateSlide(targetLeft, function () {
+						_.postSlide(animSlide);
+					});
+				} else {
+					_.postSlide(animSlide);
+				}
+			};
+
+			Slick.prototype.startLoad = function () {
+
+				var _ = this;
+
+				if (_.options.arrows === true && _.slideCount > _.options.slidesToShow) {
+
+					_.$prevArrow.hide();
+					_.$nextArrow.hide();
+				}
+
+				if (_.options.dots === true && _.slideCount > _.options.slidesToShow) {
+
+					_.$dots.hide();
+				}
+
+				_.$slider.addClass('slick-loading');
+			};
+
+			Slick.prototype.swipeDirection = function () {
+
+				var xDist,
+				    yDist,
+				    r,
+				    swipeAngle,
+				    _ = this;
+
+				xDist = _.touchObject.startX - _.touchObject.curX;
+				yDist = _.touchObject.startY - _.touchObject.curY;
+				r = Math.atan2(yDist, xDist);
+
+				swipeAngle = Math.round(r * 180 / Math.PI);
+				if (swipeAngle < 0) {
+					swipeAngle = 360 - Math.abs(swipeAngle);
+				}
+
+				if (swipeAngle <= 45 && swipeAngle >= 0) {
+					return _.options.rtl === false ? 'left' : 'right';
+				}
+				if (swipeAngle <= 360 && swipeAngle >= 315) {
+					return _.options.rtl === false ? 'left' : 'right';
+				}
+				if (swipeAngle >= 135 && swipeAngle <= 225) {
+					return _.options.rtl === false ? 'right' : 'left';
+				}
+				if (_.options.verticalSwiping === true) {
+					if (swipeAngle >= 35 && swipeAngle <= 135) {
+						return 'down';
+					} else {
+						return 'up';
+					}
+				}
+
+				return 'vertical';
+			};
+
+			Slick.prototype.swipeEnd = function (event) {
+
+				var _ = this,
+				    slideCount,
+				    direction;
+
+				_.dragging = false;
+				_.swiping = false;
+
+				if (_.scrolling) {
+					_.scrolling = false;
+					return false;
+				}
+
+				_.interrupted = false;
+				_.shouldClick = _.touchObject.swipeLength > 10 ? false : true;
+
+				if (_.touchObject.curX === undefined) {
+					return false;
+				}
+
+				if (_.touchObject.edgeHit === true) {
+					_.$slider.trigger('edge', [_, _.swipeDirection()]);
+				}
+
+				if (_.touchObject.swipeLength >= _.touchObject.minSwipe) {
+
+					direction = _.swipeDirection();
+
+					switch (direction) {
+
+						case 'left':
+						case 'down':
+
+							slideCount = _.options.swipeToSlide ? _.checkNavigable(_.currentSlide + _.getSlideCount()) : _.currentSlide + _.getSlideCount();
+
+							_.currentDirection = 0;
+
+							break;
+
+						case 'right':
+						case 'up':
+
+							slideCount = _.options.swipeToSlide ? _.checkNavigable(_.currentSlide - _.getSlideCount()) : _.currentSlide - _.getSlideCount();
+
+							_.currentDirection = 1;
+
+							break;
+
+						default:
+
+					}
+
+					if (direction != 'vertical') {
+
+						_.slideHandler(slideCount);
+						_.touchObject = {};
+						_.$slider.trigger('swipe', [_, direction]);
+					}
+				} else {
+
+					if (_.touchObject.startX !== _.touchObject.curX) {
+
+						_.slideHandler(_.currentSlide);
+						_.touchObject = {};
+					}
+				}
+			};
+
+			Slick.prototype.swipeHandler = function (event) {
+
+				var _ = this;
+
+				if (_.options.swipe === false || 'ontouchend' in document && _.options.swipe === false) {
+					return;
+				} else if (_.options.draggable === false && event.type.indexOf('mouse') !== -1) {
+					return;
+				}
+
+				_.touchObject.fingerCount = event.originalEvent && event.originalEvent.touches !== undefined ? event.originalEvent.touches.length : 1;
+
+				_.touchObject.minSwipe = _.listWidth / _.options.touchThreshold;
+
+				if (_.options.verticalSwiping === true) {
+					_.touchObject.minSwipe = _.listHeight / _.options.touchThreshold;
+				}
+
+				switch (event.data.action) {
+
+					case 'start':
+						_.swipeStart(event);
+						break;
+
+					case 'move':
+						_.swipeMove(event);
+						break;
+
+					case 'end':
+						_.swipeEnd(event);
+						break;
+
+				}
+			};
+
+			Slick.prototype.swipeMove = function (event) {
+
+				var _ = this,
+				    edgeWasHit = false,
+				    curLeft,
+				    swipeDirection,
+				    swipeLength,
+				    positionOffset,
+				    touches,
+				    verticalSwipeLength;
+
+				touches = event.originalEvent !== undefined ? event.originalEvent.touches : null;
+
+				if (!_.dragging || _.scrolling || touches && touches.length !== 1) {
+					return false;
+				}
+
+				curLeft = _.getLeft(_.currentSlide);
+
+				_.touchObject.curX = touches !== undefined ? touches[0].pageX : event.clientX;
+				_.touchObject.curY = touches !== undefined ? touches[0].pageY : event.clientY;
+
+				_.touchObject.swipeLength = Math.round(Math.sqrt(Math.pow(_.touchObject.curX - _.touchObject.startX, 2)));
+
+				verticalSwipeLength = Math.round(Math.sqrt(Math.pow(_.touchObject.curY - _.touchObject.startY, 2)));
+
+				if (!_.options.verticalSwiping && !_.swiping && verticalSwipeLength > 4) {
+					_.scrolling = true;
+					return false;
+				}
+
+				if (_.options.verticalSwiping === true) {
+					_.touchObject.swipeLength = verticalSwipeLength;
+				}
+
+				swipeDirection = _.swipeDirection();
+
+				if (event.originalEvent !== undefined && _.touchObject.swipeLength > 4) {
+					_.swiping = true;
+					event.preventDefault();
+				}
+
+				positionOffset = (_.options.rtl === false ? 1 : -1) * (_.touchObject.curX > _.touchObject.startX ? 1 : -1);
+				if (_.options.verticalSwiping === true) {
+					positionOffset = _.touchObject.curY > _.touchObject.startY ? 1 : -1;
+				}
+
+				swipeLength = _.touchObject.swipeLength;
+
+				_.touchObject.edgeHit = false;
+
+				if (_.options.infinite === false) {
+					if (_.currentSlide === 0 && swipeDirection === 'right' || _.currentSlide >= _.getDotCount() && swipeDirection === 'left') {
+						swipeLength = _.touchObject.swipeLength * _.options.edgeFriction;
+						_.touchObject.edgeHit = true;
+					}
+				}
+
+				if (_.options.vertical === false) {
+					_.swipeLeft = curLeft + swipeLength * positionOffset;
+				} else {
+					_.swipeLeft = curLeft + swipeLength * (_.$list.height() / _.listWidth) * positionOffset;
+				}
+				if (_.options.verticalSwiping === true) {
+					_.swipeLeft = curLeft + swipeLength * positionOffset;
+				}
+
+				if (_.options.fade === true || _.options.touchMove === false) {
+					return false;
+				}
+
+				if (_.animating === true) {
+					_.swipeLeft = null;
+					return false;
+				}
+
+				_.setCSS(_.swipeLeft);
+			};
+
+			Slick.prototype.swipeStart = function (event) {
+
+				var _ = this,
+				    touches;
+
+				_.interrupted = true;
+
+				if (_.touchObject.fingerCount !== 1 || _.slideCount <= _.options.slidesToShow) {
+					_.touchObject = {};
+					return false;
+				}
+
+				if (event.originalEvent !== undefined && event.originalEvent.touches !== undefined) {
+					touches = event.originalEvent.touches[0];
+				}
+
+				_.touchObject.startX = _.touchObject.curX = touches !== undefined ? touches.pageX : event.clientX;
+				_.touchObject.startY = _.touchObject.curY = touches !== undefined ? touches.pageY : event.clientY;
+
+				_.dragging = true;
+			};
+
+			Slick.prototype.unfilterSlides = Slick.prototype.slickUnfilter = function () {
+
+				var _ = this;
+
+				if (_.$slidesCache !== null) {
+
+					_.unload();
+
+					_.$slideTrack.children(this.options.slide).detach();
+
+					_.$slidesCache.appendTo(_.$slideTrack);
+
+					_.reinit();
+				}
+			};
+
+			Slick.prototype.unload = function () {
+
+				var _ = this;
+
+				$('.slick-cloned', _.$slider).remove();
+
+				if (_.$dots) {
+					_.$dots.remove();
+				}
+
+				if (_.$prevArrow && _.htmlExpr.test(_.options.prevArrow)) {
+					_.$prevArrow.remove();
+				}
+
+				if (_.$nextArrow && _.htmlExpr.test(_.options.nextArrow)) {
+					_.$nextArrow.remove();
+				}
+
+				_.$slides.removeClass('slick-slide slick-active slick-visible slick-current').attr('aria-hidden', 'true').css('width', '');
+			};
+
+			Slick.prototype.unslick = function (fromBreakpoint) {
+
+				var _ = this;
+				_.$slider.trigger('unslick', [_, fromBreakpoint]);
+				_.destroy();
+			};
+
+			Slick.prototype.updateArrows = function () {
+
+				var _ = this,
+				    centerOffset;
+
+				centerOffset = Math.floor(_.options.slidesToShow / 2);
+
+				if (_.options.arrows === true && _.slideCount > _.options.slidesToShow && !_.options.infinite) {
+
+					_.$prevArrow.removeClass('slick-disabled').attr('aria-disabled', 'false');
+					_.$nextArrow.removeClass('slick-disabled').attr('aria-disabled', 'false');
+
+					if (_.currentSlide === 0) {
+
+						_.$prevArrow.addClass('slick-disabled').attr('aria-disabled', 'true');
+						_.$nextArrow.removeClass('slick-disabled').attr('aria-disabled', 'false');
+					} else if (_.currentSlide >= _.slideCount - _.options.slidesToShow && _.options.centerMode === false) {
+
+						_.$nextArrow.addClass('slick-disabled').attr('aria-disabled', 'true');
+						_.$prevArrow.removeClass('slick-disabled').attr('aria-disabled', 'false');
+					} else if (_.currentSlide >= _.slideCount - 1 && _.options.centerMode === true) {
+
+						_.$nextArrow.addClass('slick-disabled').attr('aria-disabled', 'true');
+						_.$prevArrow.removeClass('slick-disabled').attr('aria-disabled', 'false');
+					}
+				}
+			};
+
+			Slick.prototype.updateDots = function () {
+
+				var _ = this;
+
+				if (_.$dots !== null) {
+
+					_.$dots.find('li').removeClass('slick-active').end();
+
+					_.$dots.find('li').eq(Math.floor(_.currentSlide / _.options.slidesToScroll)).addClass('slick-active');
+				}
+			};
+
+			Slick.prototype.visibility = function () {
+
+				var _ = this;
+
+				if (_.options.autoplay) {
+
+					if (document[_.hidden]) {
+
+						_.interrupted = true;
+					} else {
+
+						_.interrupted = false;
+					}
+				}
+			};
+
+			$.fn.slick = function () {
+				var _ = this,
+				    opt = arguments[0],
+				    args = Array.prototype.slice.call(arguments, 1),
+				    l = _.length,
+				    i,
+				    ret;
+				for (i = 0; i < l; i++) {
+					if ((typeof opt === "undefined" ? "undefined" : _typeof(opt)) == 'object' || typeof opt == 'undefined') _[i].slick = new Slick(_[i], opt);else ret = _[i].slick[opt].apply(_[i].slick, args);
+					if (typeof ret != 'undefined') return ret;
+				}
+				return _;
+			};
+		});
+	}, { "jquery": 6 }] }, {}, [2]);
 //# sourceMappingURL=scripts.js.map

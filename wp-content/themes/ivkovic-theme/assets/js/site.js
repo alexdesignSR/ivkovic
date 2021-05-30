@@ -3,7 +3,8 @@
 $ = require('jquery');
 
 const Navigation = require('./core/navigation');
-const example = require('./site/example');
+const Slick = require('./site/slick');
+const Like = require('./site/like');
 
 jQuery( function(){
 
@@ -13,8 +14,13 @@ jQuery( function(){
   Navigation.init();
 
   /**
-   * Initialize sample module
+   * Initialize slick
    */
-  example.init();
+  Slick.init();
+
+  /**
+   * Initialize like module
+   */
+  Like.init();
 
 });

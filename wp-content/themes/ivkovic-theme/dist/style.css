@@ -3143,7 +3143,7 @@ h6 {
   src: url("../assets/fonts/font-icons/font-icons.woff2") format("woff2"), url("../assets/fonts/font-icons/font-icons.woff") format("woff"), url("../assets/fonts/font-icons/font-icons.ttf") format("truetype");
 }
 
-.icon-angle-down:before, .icon-angle-left:before, .icon-angle-right:before, .icon-angle-up:before, .icon-cart:before, .icon-facebook:before, .icon-google-plus-g:before, .icon-instagram:before, .icon-linkedin:before, .icon-pinterest:before, .icon-search:before, .icon-twitter:before, .icon-user:before, .icon-youtube:before {
+.icon-angle-down:before, .icon-angle-left:before, .icon-angle-right:before, .icon-angle-up:before, .icon-arrow-up:before, .icon-calendar:before, .icon-cart:before, .icon-facebook:before, .icon-google-plus-g:before, .icon-heart-empty:before, .icon-heart:before, .icon-instagram:before, .icon-linkedin:before, .icon-mail:before, .icon-phone:before, .icon-pin:before, .icon-pinterest:before, .icon-search:before, .icon-share:before, .icon-star:before, .icon-twitter:before, .icon-user:before, .icon-youtube:before {
   font-family: "font-icons";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -3170,44 +3170,80 @@ h6 {
   content: "";
 }
 
-.icon-cart:before {
+.icon-arrow-up:before {
   content: "";
 }
 
-.icon-facebook:before {
+.icon-calendar:before {
   content: "";
 }
 
-.icon-google-plus-g:before {
+.icon-cart:before {
   content: "";
 }
 
-.icon-instagram:before {
+.icon-facebook:before {
   content: "";
 }
 
-.icon-linkedin:before {
+.icon-google-plus-g:before {
   content: "";
 }
 
-.icon-pinterest:before {
+.icon-heart-empty:before {
   content: "";
 }
 
-.icon-search:before {
+.icon-heart:before {
   content: "";
 }
 
-.icon-twitter:before {
+.icon-instagram:before {
   content: "";
 }
 
-.icon-user:before {
+.icon-linkedin:before {
   content: "";
 }
 
-.icon-youtube:before {
+.icon-mail:before {
   content: "";
+}
+
+.icon-phone:before {
+  content: "";
+}
+
+.icon-pin:before {
+  content: "";
+}
+
+.icon-pinterest:before {
+  content: "";
+}
+
+.icon-search:before {
+  content: "";
+}
+
+.icon-share:before {
+  content: "";
+}
+
+.icon-star:before {
+  content: "";
+}
+
+.icon-twitter:before {
+  content: "";
+}
+
+.icon-user:before {
+  content: "";
+}
+
+.icon-youtube:before {
+  content: "";
 }
 
 .logo-menu-wrapper .site-branding {
@@ -3634,6 +3670,109 @@ input[type='submit'] {
 
 fieldset {
   min-width: 0;
+}
+
+/* Slider */
+.slick-slider {
+  position: relative;
+  display: block;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -ms-touch-action: pan-y;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.slick-list {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.slick-list:focus {
+  outline: none;
+}
+
+.slick-list.dragging {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.slick-slider .slick-track,
+.slick-slider .slick-list {
+  -webkit-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+.slick-track {
+  position: relative;
+  left: 0;
+  top: 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.slick-track:before, .slick-track:after {
+  content: "";
+  display: table;
+}
+
+.slick-track:after {
+  clear: both;
+}
+
+.slick-loading .slick-track {
+  visibility: hidden;
+}
+
+.slick-slide {
+  float: left;
+  height: 100%;
+  min-height: 1px;
+  display: none;
+}
+
+[dir="rtl"] .slick-slide {
+  float: right;
+}
+
+.slick-slide img {
+  display: block;
+}
+
+.slick-slide.slick-loading img {
+  display: none;
+}
+
+.slick-slide.dragging img {
+  pointer-events: none;
+}
+
+.slick-initialized .slick-slide {
+  display: block;
+}
+
+.slick-loading .slick-slide {
+  visibility: hidden;
+}
+
+.slick-vertical .slick-slide {
+  display: block;
+  height: auto;
+  border: 1px solid transparent;
+}
+
+.slick-arrow.slick-hidden {
+  display: none;
 }
 
 .select2-container--default {

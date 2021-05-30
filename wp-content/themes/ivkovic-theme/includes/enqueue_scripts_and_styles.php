@@ -5,7 +5,9 @@
  */
 function custom_scripts_and_styles() {
 
-	$theme_options = array();
+	$theme_options = array(
+		'ajaxurl' => admin_url('admin-ajax.php'),
+	);
 	
 	if( defined('ACF_GOOGLE_API_KEY') ){
 		$theme_options['google_api_key'] = ACF_GOOGLE_API_KEY;

@@ -38,7 +38,8 @@
     "postcss-flexbugs-fixes": "^3.2.0",
     "select2": "^4.0.8",
     "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0"
+    "vinyl-source-stream": "^2.0.0",
+    "slick-carousel": "1.8.1"
   },
   "sasslintConfig": "sass-lint.yml",
   "scripts": {

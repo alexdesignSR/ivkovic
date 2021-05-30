@@ -34,35 +34,62 @@
 	@if $filename == angle-up {
 		$char: "\E004";
 	}
-	@if $filename == cart {
+	@if $filename == arrow-up {
 		$char: "\E005";
 	}
-	@if $filename == facebook {
+	@if $filename == calendar {
 		$char: "\E006";
 	}
-	@if $filename == google-plus-g {
+	@if $filename == cart {
 		$char: "\E007";
 	}
-	@if $filename == instagram {
+	@if $filename == facebook {
 		$char: "\E008";
 	}
-	@if $filename == linkedin {
+	@if $filename == google-plus-g {
 		$char: "\E009";
 	}
-	@if $filename == pinterest {
+	@if $filename == heart-empty {
 		$char: "\E00A";
 	}
-	@if $filename == search {
+	@if $filename == heart {
 		$char: "\E00B";
 	}
-	@if $filename == twitter {
+	@if $filename == instagram {
 		$char: "\E00C";
 	}
-	@if $filename == user {
+	@if $filename == linkedin {
 		$char: "\E00D";
 	}
-	@if $filename == youtube {
+	@if $filename == mail {
 		$char: "\E00E";
+	}
+	@if $filename == phone {
+		$char: "\E00F";
+	}
+	@if $filename == pin {
+		$char: "\E010";
+	}
+	@if $filename == pinterest {
+		$char: "\E011";
+	}
+	@if $filename == search {
+		$char: "\E012";
+	}
+	@if $filename == share {
+		$char: "\E013";
+	}
+	@if $filename == star {
+		$char: "\E014";
+	}
+	@if $filename == twitter {
+		$char: "\E015";
+	}
+	@if $filename == user {
+		$char: "\E016";
+	}
+	@if $filename == youtube {
+		$char: "\E017";
 	}
 
 	@return $char;
@@ -91,6 +118,12 @@
 .icon-angle-up {
 	@include icon(angle-up);
 }
+.icon-arrow-up {
+	@include icon(arrow-up);
+}
+.icon-calendar {
+	@include icon(calendar);
+}
 .icon-cart {
 	@include icon(cart);
 }
@@ -100,17 +133,38 @@
 .icon-google-plus-g {
 	@include icon(google-plus-g);
 }
+.icon-heart-empty {
+	@include icon(heart-empty);
+}
+.icon-heart {
+	@include icon(heart);
+}
 .icon-instagram {
 	@include icon(instagram);
 }
 .icon-linkedin {
 	@include icon(linkedin);
 }
+.icon-mail {
+	@include icon(mail);
+}
+.icon-phone {
+	@include icon(phone);
+}
+.icon-pin {
+	@include icon(pin);
+}
 .icon-pinterest {
 	@include icon(pinterest);
 }
 .icon-search {
 	@include icon(search);
+}
+.icon-share {
+	@include icon(share);
+}
+.icon-star {
+	@include icon(star);
 }
 .icon-twitter {
 	@include icon(twitter);
