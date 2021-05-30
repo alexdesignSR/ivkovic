@@ -169,6 +169,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		var Navigation = require('./core/navigation');
 		var Slick = require('./site/slick');
 		var Like = require('./site/like');
+		var LoadMore = require('./site/load-more');
 
 		jQuery(function () {
 
@@ -186,8 +187,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     * Initialize like module
     */
 			Like.init();
+
+			/**
+   * Initialize load more module
+   */
+			LoadMore.init();
 		});
-	}, { "./core/navigation": 1, "./site/like": 4, "./site/slick": 5, "jquery": 6 }], 3: [function (require, module, exports) {
+	}, { "./core/navigation": 1, "./site/like": 4, "./site/load-more": 5, "./site/slick": 6, "jquery": 7 }], 3: [function (require, module, exports) {
 		// "use strict";
 		var Global = module.exports = {
 
@@ -395,6 +401,63 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 	}, {}], 5: [function (require, module, exports) {
 		"use strict";
 
+		// const Global = require('./global');
+
+		// let	_this;
+
+		var _this = module.exports = {
+
+			/*-------------------------------------------------------------------------------
+   	# Cache dom and strings
+   -------------------------------------------------------------------------------*/
+			$dom: {
+				newsLoadMore: $('.news-section-load-more'),
+				newsItems: $('.news-section-items'),
+				newsLoadMoreWrap: $('.news-section-more')
+			},
+
+			vars: {},
+
+			bind: function bind() {
+				_this.$dom.newsLoadMore.on('click', _this.loadNews);
+			},
+
+			loadNews: function loadNews() {
+				var thisEl = $(this);
+				var loaded = thisEl.data('loaded');
+				var max = thisEl.data('max');
+
+				$.ajax({
+					url: theme.ajaxurl,
+					type: 'POST',
+					dataType: 'HTML',
+					data: {
+						action: 'ajax_posts_load_more',
+						loaded: loaded,
+						max: max
+					}
+				}).done(function (data) {
+					_this.$dom.newsItems.append(data);
+
+					_this.$dom.newsLoadMore.data('loaded', parseInt(loaded) + 2);
+
+					if (parseInt(loaded) + 6 >= max) {
+						_this.$dom.newsLoadMoreWrap.hide();
+					}
+				});
+			},
+
+			/*-------------------------------------------------------------------------------
+   	# Initialize
+   -------------------------------------------------------------------------------*/
+			init: function init() {
+				_this.bind();
+			}
+
+		};
+	}, {}], 6: [function (require, module, exports) {
+		"use strict";
+
 		/**  
    * 1. Add [ "slick-carousel": "1.8.1" ], to package.json
    * 2. npm install
@@ -414,7 +477,9 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			$dom: {
 				homeHero: $(".home-hero-slider"),
 				catalSlider: $('.catal-slider-slider'),
-				testimonials: $('.tst-items')
+				testimonials: $('.tst-items'),
+				textSlider: $('.text-slider-wrapper'),
+				imageText: $('.image-text-images')
 			},
 
 			/*-------------------------------------------------------------------------------
@@ -448,9 +513,27 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
 					nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>"
 				});
+
+				this.$dom.textSlider.slick({
+					slidesToScroll: 1,
+					slidesToShow: 1,
+					dots: false,
+					arrows: true,
+					prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
+					nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>"
+				});
+
+				this.$dom.imageText.slick({
+					slidesToScroll: 1,
+					slidesToShow: 1,
+					dots: false,
+					arrows: true,
+					prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
+					nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>"
+				});
 			}
 		};
-	}, { "slick-carousel": 7 }], 6: [function (require, module, exports) {
+	}, { "slick-carousel": 8 }], 7: [function (require, module, exports) {
 		/*!
    * jQuery JavaScript Library v3.4.1
    * https://jquery.com/
@@ -10585,7 +10668,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			return jQuery;
 		});
-	}, {}], 7: [function (require, module, exports) {
+	}, {}], 8: [function (require, module, exports) {
 		/*
        _ _      _       _
    ___| (_) ___| | __  (_)___
@@ -13339,4 +13422,4 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				return _;
 			};
 		});
-	}, { "jquery": 6 }] }, {}, [2]);
+	}, { "jquery": 7 }] }, {}, [2]);

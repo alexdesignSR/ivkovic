@@ -113,3 +113,32 @@ function ajax_post_like(){
 
 	die();
 }
+
+
+add_action('wp_ajax_ajax_posts_load_more', 'ajax_posts_load_more');
+add_action('wp_ajax_nopriv_ajax_posts_load_more', 'ajax_posts_load_more');
+
+function ajax_posts_load_more(){
+	$loaded = ( isset($_REQUEST['loaded']) ) ? $_REQUEST['loaded'] : '';
+	$max = ( isset($_REQUEST['max']) ) ? $_REQUEST['max'] : '';
+
+	$args = array(
+		'post_type' => 'post',
+		'posts_per_page' => 6,
+		'offset' => $loaded
+	);
+
+	$query = new WP_Query( $args );
+
+	if( $query->have_posts() ):
+
+		while ( $query->have_posts() ) : $query->the_post();
+                            
+            get_template_part('template-parts/custom/post-item');
+
+        endwhile;
+
+	endif;
+
+	die();
+}

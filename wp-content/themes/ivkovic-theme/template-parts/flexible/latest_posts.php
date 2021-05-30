@@ -2,10 +2,8 @@
 
 $args = array(
     'post_type' => 'post',
-    'posts_per_page' => 6,
+    'posts_per_page' => 3,
     'no_found_rows'  => true,
-    'category__in' => wp_get_post_categories(get_the_ID()),
-    'post__not_in' => array(get_the_ID()),
 );
 
 $query = new WP_Query( $args );

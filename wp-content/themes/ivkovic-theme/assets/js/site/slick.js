@@ -20,6 +20,8 @@ module.exports = {
 		homeHero: $(".home-hero-slider"),
 		catalSlider: $('.catal-slider-slider'),
 		testimonials: $('.tst-items'),
+		textSlider: $('.text-slider-wrapper'),
+		imageText: $('.image-text-images'),
 	},
 	
 	/*-------------------------------------------------------------------------------
@@ -48,6 +50,24 @@ module.exports = {
 		this.$dom.testimonials.slick({
 			slidesToScroll: 3,
 			slidesToShow: 3,
+			dots: false,
+			arrows: true,
+			prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
+			nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>",
+		});
+
+		this.$dom.textSlider.slick({
+			slidesToScroll: 1,
+			slidesToShow: 1,
+			dots: false,
+			arrows: true,
+			prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
+			nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>",
+		});
+
+		this.$dom.imageText.slick({
+			slidesToScroll: 1,
+			slidesToShow: 1,
 			dots: false,
 			arrows: true,
 			prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
