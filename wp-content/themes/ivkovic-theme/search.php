@@ -7,45 +7,59 @@
 
 get_header(); ?>
 
-<div class="container">
-	<div class="row">
-		<section id="primary" class="content-area">
-			<main id="main" class="site-main" role="main">
-				<?php if ( have_posts() ) : ?>
+<div id="primary" class="content-area">
+    <main id="main" class="site-main" role="main">
 
-					<header class="page-header">
-						<h1 class="page-title">
-							<?php
-							/* translators: %s: search term */
-							printf( esc_html__( 'Search Results for: %s', 'ivkovic' ), '<span>' . get_search_query() . '</span>' );
-							?>
-						</h1>
-					</header><!-- .page-header -->
+        <?php global $wp_query; 
 
-					<?php
+		$post_index = 0;
+		
+		?>
 
-					while ( have_posts() ) :
-						the_post();
-						/**
-						 * Run the loop for the search to output the results.
-						 * If you want to overload this in a child theme then include a file
-						 * called content-search.php and that will be used instead.
-						 */
+        <div class="post-items-wrapper">
+            <div class="container">
+                <div class="post-items-inner">
 
-						get_template_part( 'template-parts/content', 'search' );
-					endwhile;
-					?>
+					<div class="post-items-search">
+						<?php get_search_form(); ?>
+					</div><!-- .post-items-search -->
 
-					<?php ivkovic_post_navigation(); ?>
+                    <?php if (have_posts()) : ?>
 
-				<?php else : ?>
+                        <div class="post-items">
 
-					<?php get_template_part( 'template-parts/content', 'none' ); ?>
+                            <?php while (have_posts()) : the_post();
 
-				<?php endif; ?>
-			</main><!-- #main -->
-		</section><!-- #primary -->
-	</div><!-- .row -->
-</div><!-- .container -->
+								if( $post_index ):
+									get_template_part('template-parts/custom/post-item');
+								else:
+									get_template_part('template-parts/custom/post-item-wide');
+									$post_index++;
+								endif;
+
+                            endwhile; ?>
+
+                        </div><!-- .post-items -->
+
+                    <?php else : ?>
+
+                        <?php get_template_part('template-parts/content', 'none'); ?>
+
+                    <?php endif; ?>
+
+                    <?php if( $wp_query->found_posts > 7 ): ?>
+
+                        <div class="post-items-more">
+                            <span class="post-items-load-more btn btn-sec" data-search="<?php echo get_search_query(); ?>" data-loaded="7" data-max="<?php echo $wp_query->found_posts; ?>"><?php _e('Učitaj još','ivkovic'); ?></span>
+                        </div><!-- .post-items-more -->
+
+                    <?php endif; ?>
+
+                </div><!-- .post-items-inner -->
+            </div><!-- .container -->
+        </div><!-- .post-items-wrapper -->
+
+    </main><!-- #main -->
+</div><!-- #primary -->
 
 <?php get_footer(); ?>

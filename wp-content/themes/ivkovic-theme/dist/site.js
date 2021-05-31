@@ -358,18 +358,42 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
    -------------------------------------------------------------------------------*/
 			$dom: {
 				body: $('body'),
-				likeButton: $('.post-item-like i')
+				likeButton: $('.post-item-like i'),
+
+				postVideo: $('.post-item video')
 			},
 
 			vars: {},
 
 			bind: function bind() {
 				_this.$dom.likeButton.on('click', _this.like);
+
+				_this.$dom.postVideo.click(function () {
+
+					if (this.paused) {
+						this.play();
+						$(this).siblings('.post-item-video-overlay').addClass('hide');
+					} else {
+						this.pause();
+						$(this).siblings('.post-item-video-overlay').removeClass('hide');
+					}
+				});
 			},
 
 			like: function like() {
 				var thisEl = $(this);
 				var postId = thisEl.data('id');
+
+				var likeCountEl = thisEl.closest('.post-item').find('.post-item-likes-count span');
+				var likeCount = parseInt(likeCountEl.text());
+
+				if (thisEl.hasClass('icon-heart-empty')) {
+					thisEl.removeClass('icon-heart-empty').addClass('icon-heart');
+					likeCountEl.text(likeCount + 1);
+				} else {
+					thisEl.addClass('icon-heart-empty').removeClass('icon-heart');
+					likeCountEl.text(likeCount - 1);
+				}
 
 				if (postId) {
 					$.ajax({
@@ -380,13 +404,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 							action: 'ajax_post_like',
 							post_id: postId
 						}
-					}).done(function (data) {
-						if (thisEl.hasClass('icon-heart-empty')) {
-							thisEl.removeClass('icon-heart-empty').addClass('icon-heart');
-						} else {
-							thisEl.addClass('icon-heart-empty').removeClass('icon-heart');
-						}
-					});
+					}).done(function (data) {});
 				}
 			},
 
@@ -413,13 +431,23 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 			$dom: {
 				newsLoadMore: $('.news-section-load-more'),
 				newsItems: $('.news-section-items'),
-				newsLoadMoreWrap: $('.news-section-more')
+				newsLoadMoreWrap: $('.news-section-more'),
+
+				catalLoadMore: $('.catal-items-load-more'),
+				catalItems: $('.catal-items'),
+				catalLoadMoreWrap: $('.catal-items-more'),
+
+				postLoadMore: $('.post-items-load-more'),
+				postItems: $('.post-items'),
+				postLoadMoreWrap: $('.post-items-more')
 			},
 
 			vars: {},
 
 			bind: function bind() {
 				_this.$dom.newsLoadMore.on('click', _this.loadNews);
+				_this.$dom.catalLoadMore.on('click', _this.loadCatals);
+				_this.$dom.postLoadMore.on('click', _this.loadPosts);
 			},
 
 			loadNews: function loadNews() {
@@ -443,6 +471,60 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 					if (parseInt(loaded) + 6 >= max) {
 						_this.$dom.newsLoadMoreWrap.hide();
+					}
+				});
+			},
+
+			loadCatals: function loadCatals() {
+				var thisEl = $(this);
+				var loaded = thisEl.data('loaded');
+				var max = thisEl.data('max');
+
+				$.ajax({
+					url: theme.ajaxurl,
+					type: 'POST',
+					dataType: 'HTML',
+					data: {
+						action: 'ajax_catals_load_more',
+						loaded: loaded,
+						max: max
+					}
+				}).done(function (data) {
+					_this.$dom.catalItems.append(data);
+
+					_this.$dom.catalLoadMore.data('loaded', parseInt(loaded) + 2);
+
+					if (parseInt(loaded) + 6 >= max) {
+						_this.$dom.catalLoadMoreWrap.hide();
+					}
+				});
+			},
+
+			loadPosts: function loadPosts() {
+				var thisEl = $(this);
+				var loaded = thisEl.data('loaded');
+				var max = thisEl.data('max');
+				var search = thisEl.data('search');
+
+				$.ajax({
+					url: theme.ajaxurl,
+					type: 'POST',
+					dataType: 'HTML',
+					data: {
+						action: 'ajax_posts_archive_load_more',
+						loaded: loaded,
+						max: max,
+						search: search
+					}
+				}).done(function (data) {
+					_this.$dom.postItems.append(data);
+
+					_this.$dom.postLoadMore.data('loaded', parseInt(loaded) + 2);
+
+					console.log(parseInt(loaded) + 6 + ' vs ' + max);
+
+					if (parseInt(loaded) + 6 >= max) {
+						_this.$dom.postLoadMoreWrap.hide();
 					}
 				});
 			},

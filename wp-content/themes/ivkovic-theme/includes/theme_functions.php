@@ -142,3 +142,92 @@ function ajax_posts_load_more(){
 
 	die();
 }
+
+add_action('wp_ajax_ajax_posts_archive_load_more', 'ajax_posts_archive_load_more');
+add_action('wp_ajax_nopriv_ajax_posts_archive_load_more', 'ajax_posts_archive_load_more');
+
+function ajax_posts_archive_load_more(){
+	$loaded = ( isset($_REQUEST['loaded']) ) ? $_REQUEST['loaded'] : '';
+	$max = ( isset($_REQUEST['max']) ) ? $_REQUEST['max'] : '';
+	$search = ( isset($_REQUEST['search']) ) ? $_REQUEST['search'] : '';
+
+	if( $search ):
+		$args = array(
+			'post_type' => 'post',
+			'posts_per_page' => 6,
+			'offset' => $loaded,
+			's' => $search
+		);
+	else:
+		$args = array(
+			'post_type' => 'post',
+			'posts_per_page' => 6,
+			'offset' => $loaded
+		);
+	endif;	
+
+	$query = new WP_Query( $args );
+
+	if( $query->have_posts() ):
+
+		while ( $query->have_posts() ) : $query->the_post();
+                            
+            get_template_part('template-parts/custom/post-item');
+
+        endwhile;
+
+	endif;
+
+	die();
+}
+
+add_action('wp_ajax_ajax_catals_load_more', 'ajax_catals_load_more');
+add_action('wp_ajax_nopriv_ajax_catals_load_more', 'ajax_catals_load_more');
+
+function ajax_catals_load_more(){
+	$loaded = ( isset($_REQUEST['loaded']) ) ? $_REQUEST['loaded'] : '';
+	$max = ( isset($_REQUEST['max']) ) ? $_REQUEST['max'] : '';
+
+	$args = array(
+		'post_type' => 'catalogue',
+		'posts_per_page' => 6,
+		'offset' => $loaded
+	);
+
+	$query = new WP_Query( $args );
+
+	if( $query->have_posts() ):
+
+		while ( $query->have_posts() ) : $query->the_post();
+                            
+			get_template_part('template-parts/custom/catalogue-item');
+
+        endwhile;
+
+	endif;
+
+	die();
+}
+
+function pre_get_posts_func($query){
+	if ( !is_admin() && $query->is_main_query() ) {
+		if ( is_post_type_archive('catalogue') ) {
+
+			$query->set( 'posts_per_page' , 6 );
+		}
+
+		if( is_search() ){
+			$query->set( 'post_type' , 'post' );
+		}
+	}
+}
+add_action( 'pre_get_posts', 'pre_get_posts_func' );
+
+
+function template_redirect_func() {
+	if ( is_singular('catalogue') ) {
+		wp_redirect( home_url(), 302 );
+		exit;
+	}
+}
+add_action( 'template_redirect', 'template_redirect_func' );

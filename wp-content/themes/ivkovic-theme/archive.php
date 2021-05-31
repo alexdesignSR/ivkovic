@@ -9,45 +9,59 @@
 
 get_header(); ?>
 
-<div class="container">
-    <div class="row">
-        <div id="primary" class="content-area">
-            <main id="main" class="site-main" role="main">
+<div id="primary" class="content-area">
+    <main id="main" class="site-main" role="main">
 
-                <?php if (have_posts()) : ?>
+        <?php global $wp_query; 
+		
+		$post_index = 0;
+		
+		?>
 
-                    <header class="page-header">
-                        <?php
-                        echo ivkovic_archive_title('<h1 class="page-title">', '</h1>');
-                        the_archive_description('<div class="taxonomy-description">', '</div>');
-                        ?>
-                    </header><!-- .page-header -->
+        <div class="post-items-wrapper">
+            <div class="container">
+                <div class="post-items-inner">
 
-                    <?php /* Start the Loop */ ?>
-                    <?php while (have_posts()) : the_post(); ?>
+					<div class="post-items-search">
+						<?php get_search_form(); ?>
+					</div><!-- .post-items-search -->
 
-                        <?php
+                    <?php if (have_posts()) : ?>
 
-                        /*
-                         * Include the Post-Format-specific template for the content.
-                         * If you want to override this in a child theme, then include a file
-                         * called content-___.php (where ___ is the Post Format name) and that will be used instead.
-                         */
-                        get_template_part('template-parts/content', get_post_format());
-                        ?>
+                        <div class="post-items">
 
-                    <?php endwhile; ?>
+                            <?php while (have_posts()) : the_post();
 
-                    <?php ivkovic_post_navigation(); ?>
+								if( $post_index ):
+									get_template_part('template-parts/custom/post-item');
+								else:
+									get_template_part('template-parts/custom/post-item-wide');
+									$post_index++;
+								endif;
 
-                <?php else : ?>
+                            endwhile; ?>
 
-                    <?php get_template_part('template-parts/content', 'none'); ?>
+                        </div><!-- .post-items -->
 
-                <?php endif; ?>
+                    <?php else : ?>
 
-            </main><!-- #main -->
-        </div><!-- #primary -->
-    </div><!-- .row -->
-</div><!-- .container -->
+                        <?php get_template_part('template-parts/content', 'none'); ?>
+
+                    <?php endif; ?>
+
+                    <?php if( $wp_query->found_posts > 7 ): ?>
+
+                        <div class="post-items-more">
+                            <span class="post-items-load-more btn btn-sec" data-loaded="7" data-max="<?php echo $wp_query->found_posts; ?>"><?php _e('Učitaj još','ivkovic'); ?></span>
+                        </div><!-- .post-items-more -->
+
+                    <?php endif; ?>
+
+                </div><!-- .post-items-inner -->
+            </div><!-- .container -->
+        </div><!-- .post-items-wrapper -->
+
+    </main><!-- #main -->
+</div><!-- #primary -->
+
 <?php get_footer(); ?>

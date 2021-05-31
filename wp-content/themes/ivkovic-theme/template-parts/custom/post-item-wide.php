@@ -6,22 +6,44 @@ else:
     $likes_count = 0;
 endif;
 
+$video = get_field('video');
+$video_class = ( $video )? 'post-has-video':'';
+
 ?>
 
-<div class="post-item">
+<div class="post-item post-item-wide <?php echo $video_class; ?>">
 
     <div class="post-item-image">
-        <a href="<?php echo get_permalink(); ?>">
 
-            <?php if( has_post_thumbnail() ):
-                echo get_the_post_thumbnail(get_the_ID(),'post_item');
-            else: ?>
+        <?php if( !$video ): ?>
+            <a href="<?php echo get_permalink(); ?>">
+        <?php endif; ?>
+        
+            <?php if( $video ): ?>
 
-                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/post-item.jpg" alt="post-item" />
+                <video width="1270" height="495">
+                    <source src="<?php echo $video; ?>" type="video/mp4">
+                </video>
 
+                <div class="post-item-video-overlay">
+                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/play.svg" alt="play" />
+                </div><!-- .post-item-video-overlay -->
+ 
+            <?php else: ?>
+
+                <?php if( has_post_thumbnail() ):
+                    echo get_the_post_thumbnail(get_the_ID(),'post_item_wide');
+                else: ?>
+
+                    <img src="<?php echo get_template_directory_uri(); ?>/assets/images/post-item-wide.jpg" alt="post-item" />
+
+                <?php endif; ?>
+                
             <?php endif; ?>
 
-        </a>
+        <?php if( !$video ): ?>
+            </a>
+        <?php endif; ?>
     </div><!-- .post-item-image -->
 
     <div class="post-item-likes">
