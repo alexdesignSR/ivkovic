@@ -21,6 +21,7 @@ module.exports = {
 		catalSlider: $('.catal-slider-slider'),
 		testimonials: $('.tst-items'),
 		textSlider: $('.text-slider-wrapper'),
+		contactSlider: $('.contact-slider-wrapper'),
 		imageText: $('.image-text-images'),
 	},
 	
@@ -57,6 +58,15 @@ module.exports = {
 		});
 
 		this.$dom.textSlider.slick({
+			slidesToScroll: 1,
+			slidesToShow: 1,
+			dots: false,
+			arrows: true,
+			prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
+			nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>",
+		});
+
+		this.$dom.contactSlider.slick({
 			slidesToScroll: 1,
 			slidesToShow: 1,
 			dots: false,

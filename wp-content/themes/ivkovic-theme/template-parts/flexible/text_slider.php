@@ -11,27 +11,29 @@
         ?>
 
             <div class="text-slide" <?php bg($image); ?>>
-                <div class="text-slide-box">
-                    <div class="text-slide-box-inner">
+                <div class="container">
+                    <div class="text-slide-box">
+                        <div class="text-slide-box-inner">
 
-                        <?php if( $title ): ?>
+                            <?php if( $title ): ?>
 
-                            <header class="text-slide-header">
-                                <h2 class="text-slide-title"><?php echo $title; ?></h2>
-                            </header><!-- .text-slide-header -->
-                            
-                        <?php endif; ?>
+                                <header class="text-slide-header">
+                                    <h2 class="text-slide-title"><?php echo $title; ?></h2>
+                                </header><!-- .text-slide-header -->
+                                
+                            <?php endif; ?>
 
-                        <?php if( $text ): ?>
+                            <?php if( $text ): ?>
 
-                            <div class="text-slider-text entry-content">
-                                <?php echo $text; ?>
-                            </div><!-- .text-slider-text -->
-                            
-                        <?php endif; ?>
+                                <div class="text-slider-text entry-content">
+                                    <?php echo $text; ?>
+                                </div><!-- .text-slider-text -->
+                                
+                            <?php endif; ?>
 
-                    </div><!-- .text-slide-box-inner -->
-                </div><!-- .text-slide-box -->
+                        </div><!-- .text-slide-box-inner -->
+                    </div><!-- .text-slide-box -->
+                </div><!-- .container -->
             </div><!-- .text-slide -->
 
         <?php endwhile; ?>
@@ -39,7 +41,3 @@
     </section><!-- .text-slider-wrapper -->
 
 <?php endif; ?>
-
-
-
-

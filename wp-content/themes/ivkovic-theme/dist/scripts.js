@@ -358,7 +358,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
    -------------------------------------------------------------------------------*/
 			$dom: {
 				body: $('body'),
-				likeButton: $('.post-item-like i'),
+				likeButton: $('.post-item-like i, .single-post-like i'),
 
 				postVideo: $('.post-item video')
 			},
@@ -561,6 +561,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				catalSlider: $('.catal-slider-slider'),
 				testimonials: $('.tst-items'),
 				textSlider: $('.text-slider-wrapper'),
+				contactSlider: $('.contact-slider-wrapper'),
 				imageText: $('.image-text-images')
 			},
 
@@ -597,6 +598,15 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				});
 
 				this.$dom.textSlider.slick({
+					slidesToScroll: 1,
+					slidesToShow: 1,
+					dots: false,
+					arrows: true,
+					prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
+					nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>"
+				});
+
+				this.$dom.contactSlider.slick({
 					slidesToScroll: 1,
 					slidesToShow: 1,
 					dots: false,

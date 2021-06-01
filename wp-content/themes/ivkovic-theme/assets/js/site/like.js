@@ -12,7 +12,7 @@ let _this = module.exports = {
 	-------------------------------------------------------------------------------*/
 	$dom: {
 		body: $('body'),
-        likeButton: $('.post-item-like i'),
+        likeButton: $('.post-item-like i, .single-post-like i'),
 
         postVideo: $('.post-item video')
     },
