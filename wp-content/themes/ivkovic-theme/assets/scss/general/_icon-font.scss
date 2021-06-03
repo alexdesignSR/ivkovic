@@ -73,23 +73,29 @@
 	@if $filename == pinterest {
 		$char: "\E011";
 	}
-	@if $filename == search {
+	@if $filename == qty-down {
 		$char: "\E012";
 	}
-	@if $filename == share {
+	@if $filename == qty-up {
 		$char: "\E013";
 	}
-	@if $filename == star {
+	@if $filename == search {
 		$char: "\E014";
 	}
-	@if $filename == twitter {
+	@if $filename == share {
 		$char: "\E015";
 	}
-	@if $filename == user {
+	@if $filename == star {
 		$char: "\E016";
 	}
-	@if $filename == youtube {
+	@if $filename == twitter {
 		$char: "\E017";
+	}
+	@if $filename == user {
+		$char: "\E018";
+	}
+	@if $filename == youtube {
+		$char: "\E019";
 	}
 
 	@return $char;
@@ -156,6 +162,12 @@
 }
 .icon-pinterest {
 	@include icon(pinterest);
+}
+.icon-qty-down {
+	@include icon(qty-down);
+}
+.icon-qty-up {
+	@include icon(qty-up);
 }
 .icon-search {
 	@include icon(search);

@@ -225,9 +225,38 @@ add_action( 'pre_get_posts', 'pre_get_posts_func' );
 
 
 function template_redirect_func() {
+
+	$current_id = get_the_ID();
+	$my_acc_id = get_option('woocommerce_myaccount_page_id');
+	$is_logged = is_user_logged_in();
+	$page_register = get_field('page_register','option');
+	//$page_login = get_field('page_login','option');
+
 	if ( is_singular('catalogue') ) {
+		wp_redirect( home_url(), 302 );
+		exit;
+	}
+
+	if ( $current_id == $page_register && $is_logged ) {
+		wp_redirect( get_permalink( $my_acc_id ), 302 );
+		exit;
+	}
+
+	if ( $current_id == $my_acc_id && !$is_logged ) {
 		wp_redirect( home_url(), 302 );
 		exit;
 	}
 }
 add_action( 'template_redirect', 'template_redirect_func' );
+
+function custom_login(){
+	global $pagenow;
+	//  URL for the HomePage. You can set this to the URL of any page you wish to redirect to.
+	$page_login = get_field('page_login','option');
+	//  Redirect to the Homepage, if if it is login page. Make sure it is not called to logout or for lost password feature
+	if( 'wp-login.php' == $pagenow && $_GET['action']!="logout" && $_GET['action']!="lostpassword") {
+		wp_redirect(get_permalink( $page_login ));
+		exit();
+	}
+}
+add_action('init','custom_login');

@@ -1,0 +1,11 @@
+.single-product-color-var{
+    width: 22px;
+    height: 22px;
+    border-radius: 22px;
+}
+
+.variations{
+    .label, select, .reset_variations{
+        display: none!important;
+    }
+}

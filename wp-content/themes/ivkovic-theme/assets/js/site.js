@@ -6,6 +6,8 @@ const Navigation = require('./core/navigation');
 const Slick = require('./site/slick');
 const Like = require('./site/like');
 const LoadMore = require('./site/load-more');
+const VarSelect = require('./site/variation-select');
+const ProductQty = require('./site/product-qty');
 
 jQuery( function(){
 
@@ -28,5 +30,15 @@ jQuery( function(){
    * Initialize load more module
    */
   LoadMore.init();
+
+  /**
+   * Initialize Variation select
+   */
+  VarSelect.init();
+
+  /**
+   * Initialize ProductQty
+   */
+  ProductQty.init();
 
 });

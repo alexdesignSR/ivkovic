@@ -12,21 +12,24 @@
 
 get_header(); ?>
 
-<div class="container">
-	<div class="row">
-		<div id="primary" class="content-area">
-			<main id="main" class="site-main" role="main">
+<div id="primary" class="content-area">
+	<main id="main" class="site-main" role="main">
+		<section class="single-page-wrapper">
+			<div class="container">
+				<div class="single-page-inner">
 
-				<?php while ( have_posts() ) : ?>
+					<?php while ( have_posts() ) : ?>
 
-					<?php the_post(); ?>
+						<?php the_post(); ?>
 
-					<?php get_template_part( 'template-parts/content', 'page' ); ?>
+						<?php get_template_part( 'template-parts/content', 'page' ); ?>
 
-				<?php endwhile; // End of the loop. ?>
-			</main><!-- #main -->
-		</div><!-- #primary -->
-	</div><!-- .row -->
-</div><!-- .container -->
+					<?php endwhile; // End of the loop. ?>
+
+				</div><!-- .single-page-inner -->
+			</div><!-- .container -->
+		</section><!-- .single-page-wrapper -->
+	</main><!-- #main -->
+</div><!-- #primary -->
 
 <?php get_footer(); ?>

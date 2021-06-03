@@ -170,6 +170,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		var Slick = require('./site/slick');
 		var Like = require('./site/like');
 		var LoadMore = require('./site/load-more');
+		var VarSelect = require('./site/variation-select');
+		var ProductQty = require('./site/product-qty');
 
 		jQuery(function () {
 
@@ -192,8 +194,18 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
    * Initialize load more module
    */
 			LoadMore.init();
+
+			/**
+    * Initialize Variation select
+    */
+			VarSelect.init();
+
+			/**
+    * Initialize ProductQty
+    */
+			ProductQty.init();
 		});
-	}, { "./core/navigation": 1, "./site/like": 4, "./site/load-more": 5, "./site/slick": 6, "jquery": 7 }], 3: [function (require, module, exports) {
+	}, { "./core/navigation": 1, "./site/like": 4, "./site/load-more": 5, "./site/product-qty": 6, "./site/slick": 7, "./site/variation-select": 8, "jquery": 9 }], 3: [function (require, module, exports) {
 		// "use strict";
 		var Global = module.exports = {
 
@@ -538,6 +550,54 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 		};
 	}, {}], 6: [function (require, module, exports) {
+		(function ($) {
+			"use strict";
+
+			// var Global = require('./global');
+
+			// let	_this;
+
+			var _this = module.exports = {
+
+				/*-------------------------------------------------------------------------------
+    	# Cache dom and strings
+    -------------------------------------------------------------------------------*/
+				$dom: {
+					body: $('body')
+				},
+
+				vars: {},
+
+				/*-------------------------------------------------------------------------------
+    	# Initialize
+    -------------------------------------------------------------------------------*/
+				init: function init() {
+					_this.bind();
+				},
+
+				bind: function bind() {
+					// increse qty
+					_this.$dom.body.on('click', '.qty-minus', _this.decreseQty);
+					_this.$dom.body.on('click', '.qty-plus', _this.increseQty);
+				},
+
+				increseQty: function increseQty() {
+
+					var val = parseInt($(this).parent().siblings('input').val());
+					$(this).parent().siblings('input').val(val + 1).trigger('change');
+				},
+
+				decreseQty: function decreseQty() {
+
+					var val = parseInt($(this).parent().siblings('input').val());
+					if (val > 1) {
+						$(this).parent().siblings('input').val(val - 1).trigger('change');
+					}
+				}
+
+			};
+		})(jQuery);
+	}, {}], 7: [function (require, module, exports) {
 		"use strict";
 
 		/**  
@@ -625,7 +685,65 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				});
 			}
 		};
-	}, { "slick-carousel": 8 }], 7: [function (require, module, exports) {
+	}, { "slick-carousel": 10 }], 8: [function (require, module, exports) {
+		(function ($) {
+			"use strict";
+
+			// const Global = require('./global');
+
+			// let	_this;
+
+			var _this = module.exports = {
+
+				/*-------------------------------------------------------------------------------
+    	# Cache dom and strings
+    -------------------------------------------------------------------------------*/
+				$dom: {
+					body: $('body'),
+					colorItem: $('.single-product-color-var'),
+
+					variationsForm: $(".variations_form")
+				},
+
+				vars: {},
+
+				/*-------------------------------------------------------------------------------
+    	# Initialize
+    -------------------------------------------------------------------------------*/
+				init: function init() {
+					_this.bind();
+				},
+
+				bind: function bind() {
+					// click on color variation
+					_this.$dom.colorItem.on('click', _this.changeColorVar);
+				},
+
+				changeColorVar: function changeColorVar() {
+
+					_this.$dom.colorItem.removeClass('active');
+					$(this).addClass('active');
+
+					var atrributeName = $(this).attr('data-name');
+					var attributeValue = $(this).attr('data-value');
+
+					var $select = $('select[name="' + atrributeName + '"]');
+
+					$select.val(attributeValue);
+					$select.trigger('change');
+
+					_this.showPrice();
+				},
+
+				showPrice: function showPrice() {
+
+					var varPrice = $('.single_variation_wrap .woocommerce-variation-price .price').html();
+					$('.product .entry-summary .price').html(varPrice);
+				}
+
+			};
+		})(jQuery);
+	}, {}], 9: [function (require, module, exports) {
 		/*!
    * jQuery JavaScript Library v3.4.1
    * https://jquery.com/
@@ -10760,7 +10878,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			return jQuery;
 		});
-	}, {}], 8: [function (require, module, exports) {
+	}, {}], 10: [function (require, module, exports) {
 		/*
        _ _      _       _
    ___| (_) ___| | __  (_)___
@@ -13514,5 +13632,5 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				return _;
 			};
 		});
-	}, { "jquery": 7 }] }, {}, [2]);
+	}, { "jquery": 9 }] }, {}, [2]);
 //# sourceMappingURL=scripts.js.map

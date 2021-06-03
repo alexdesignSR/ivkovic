@@ -3143,7 +3143,7 @@ h6 {
   src: url("../assets/fonts/font-icons/font-icons.woff2") format("woff2"), url("../assets/fonts/font-icons/font-icons.woff") format("woff"), url("../assets/fonts/font-icons/font-icons.ttf") format("truetype");
 }
 
-.icon-angle-down:before, .icon-angle-left:before, .icon-angle-right:before, .icon-angle-up:before, .icon-arrow-up:before, .icon-calendar:before, .icon-cart:before, .icon-facebook:before, .icon-google-plus-g:before, .icon-heart-empty:before, .icon-heart:before, .icon-instagram:before, .icon-linkedin:before, .icon-mail:before, .icon-phone:before, .icon-pin:before, .icon-pinterest:before, .icon-search:before, .icon-share:before, .icon-star:before, .icon-twitter:before, .icon-user:before, .icon-youtube:before {
+.icon-angle-down:before, .icon-angle-left:before, .icon-angle-right:before, .icon-angle-up:before, .icon-arrow-up:before, .icon-calendar:before, .icon-cart:before, .icon-facebook:before, .icon-google-plus-g:before, .icon-heart-empty:before, .icon-heart:before, .icon-instagram:before, .icon-linkedin:before, .icon-mail:before, .icon-phone:before, .icon-pin:before, .icon-pinterest:before, .icon-qty-down:before, .icon-qty-up:before, .icon-search:before, .icon-share:before, .icon-star:before, .icon-twitter:before, .icon-user:before, .icon-youtube:before {
   font-family: "font-icons";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -3222,28 +3222,36 @@ h6 {
   content: "";
 }
 
-.icon-search:before {
+.icon-qty-down:before {
   content: "";
 }
 
-.icon-share:before {
+.icon-qty-up:before {
   content: "";
 }
 
-.icon-star:before {
+.icon-search:before {
   content: "";
 }
 
-.icon-twitter:before {
+.icon-share:before {
   content: "";
 }
 
-.icon-user:before {
+.icon-star:before {
   content: "";
 }
 
-.icon-youtube:before {
+.icon-twitter:before {
   content: "";
+}
+
+.icon-user:before {
+  content: "";
+}
+
+.icon-youtube:before {
+  content: "";
 }
 
 .logo-menu-wrapper .site-branding {
@@ -3883,6 +3891,16 @@ fieldset {
       -ms-flex: none;
           flex: none;
   max-width: none;
+}
+
+.single-product-color-var {
+  width: 22px;
+  height: 22px;
+  border-radius: 22px;
+}
+
+.variations .label, .variations select, .variations .reset_variations {
+  display: none !important;
 }
 
 /*# sourceMappingURL=style.css.map */
