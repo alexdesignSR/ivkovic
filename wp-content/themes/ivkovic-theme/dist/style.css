@@ -3143,7 +3143,7 @@ h6 {
   src: url("../assets/fonts/font-icons/font-icons.woff2") format("woff2"), url("../assets/fonts/font-icons/font-icons.woff") format("woff"), url("../assets/fonts/font-icons/font-icons.ttf") format("truetype");
 }
 
-.icon-angle-down:before, .icon-angle-left:before, .icon-angle-right:before, .icon-angle-up:before, .icon-arrow-up:before, .icon-calendar:before, .icon-cart:before, .icon-facebook:before, .icon-google-plus-g:before, .icon-heart-empty:before, .icon-heart:before, .icon-instagram:before, .icon-linkedin:before, .icon-mail:before, .icon-phone:before, .icon-pin:before, .icon-pinterest:before, .icon-qty-down:before, .icon-qty-up:before, .icon-search:before, .icon-share:before, .icon-star:before, .icon-twitter:before, .icon-user:before, .icon-youtube:before {
+.icon-angle-down:before, .icon-angle-left:before, .icon-angle-right:before, .icon-angle-up:before, .icon-arrow-up:before, .icon-calendar:before, .icon-cart:before, .icon-facebook:before, .icon-google-plus-g:before, .icon-heart-empty:before, .icon-heart:before, .icon-instagram:before, .icon-linkedin:before, .icon-mail-share:before, .icon-mail:before, .icon-phone:before, .icon-pin:before, .icon-pinterest:before, .icon-qty-down:before, .icon-qty-up:before, .icon-search:before, .icon-share:before, .icon-star:before, .icon-twitter:before, .icon-user:before, .icon-whatsapp:before, .icon-youtube:before {
   font-family: "font-icons";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -3206,52 +3206,60 @@ h6 {
   content: "";
 }
 
-.icon-mail:before {
+.icon-mail-share:before {
   content: "";
 }
 
-.icon-phone:before {
+.icon-mail:before {
   content: "";
 }
 
-.icon-pin:before {
+.icon-phone:before {
   content: "";
 }
 
-.icon-pinterest:before {
+.icon-pin:before {
   content: "";
 }
 
-.icon-qty-down:before {
+.icon-pinterest:before {
   content: "";
 }
 
-.icon-qty-up:before {
+.icon-qty-down:before {
   content: "";
 }
 
-.icon-search:before {
+.icon-qty-up:before {
   content: "";
 }
 
-.icon-share:before {
+.icon-search:before {
   content: "";
 }
 
-.icon-star:before {
+.icon-share:before {
   content: "";
 }
 
-.icon-twitter:before {
+.icon-star:before {
   content: "";
 }
 
-.icon-user:before {
+.icon-twitter:before {
   content: "";
 }
 
-.icon-youtube:before {
+.icon-user:before {
   content: "";
+}
+
+.icon-whatsapp:before {
+  content: "";
+}
+
+.icon-youtube:before {
+  content: "";
 }
 
 .logo-menu-wrapper .site-branding {
@@ -3901,6 +3909,22 @@ fieldset {
 
 .variations .label, .variations select, .variations .reset_variations {
   display: none !important;
+}
+
+.sf-field-posts_per_page {
+  display: none !important;
+}
+
+.product.sp-added-to-cart .woocommerce-product-gallery ol, .product.sp-added-to-cart .sp-custom-color, .product.sp-added-to-cart .sp-custom-color-popup, .product.sp-added-to-cart .single_variation_wrap, .product.sp-added-to-cart .share-links-wrap {
+  display: none !important;
+}
+
+.product.sp-added-to-cart .single-product-color-vars {
+  pointer-events: none;
+}
+
+.product.sp-added-to-cart .single-product-color-var {
+  display: none;
 }
 
 /*# sourceMappingURL=style.css.map */

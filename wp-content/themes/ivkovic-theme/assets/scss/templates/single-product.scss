@@ -9,3 +9,19 @@
         display: none!important;
     }
 }
+
+.sf-field-posts_per_page{
+    display: none!important;
+}
+
+.product.sp-added-to-cart{
+    .woocommerce-product-gallery ol, .sp-custom-color, .sp-custom-color-popup, .single_variation_wrap, .share-links-wrap{
+        display: none!important;
+    }
+    .single-product-color-vars{
+        pointer-events: none;
+    }
+    .single-product-color-var{
+        display: none;
+    }
+}

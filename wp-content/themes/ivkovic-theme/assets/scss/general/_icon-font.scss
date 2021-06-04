@@ -61,41 +61,47 @@
 	@if $filename == linkedin {
 		$char: "\E00D";
 	}
-	@if $filename == mail {
+	@if $filename == mail-share {
 		$char: "\E00E";
 	}
-	@if $filename == phone {
+	@if $filename == mail {
 		$char: "\E00F";
 	}
-	@if $filename == pin {
+	@if $filename == phone {
 		$char: "\E010";
 	}
-	@if $filename == pinterest {
+	@if $filename == pin {
 		$char: "\E011";
 	}
-	@if $filename == qty-down {
+	@if $filename == pinterest {
 		$char: "\E012";
 	}
-	@if $filename == qty-up {
+	@if $filename == qty-down {
 		$char: "\E013";
 	}
-	@if $filename == search {
+	@if $filename == qty-up {
 		$char: "\E014";
 	}
-	@if $filename == share {
+	@if $filename == search {
 		$char: "\E015";
 	}
-	@if $filename == star {
+	@if $filename == share {
 		$char: "\E016";
 	}
-	@if $filename == twitter {
+	@if $filename == star {
 		$char: "\E017";
 	}
-	@if $filename == user {
+	@if $filename == twitter {
 		$char: "\E018";
 	}
-	@if $filename == youtube {
+	@if $filename == user {
 		$char: "\E019";
+	}
+	@if $filename == whatsapp {
+		$char: "\E01A";
+	}
+	@if $filename == youtube {
+		$char: "\E01B";
 	}
 
 	@return $char;
@@ -151,6 +157,9 @@
 .icon-linkedin {
 	@include icon(linkedin);
 }
+.icon-mail-share {
+	@include icon(mail-share);
+}
 .icon-mail {
 	@include icon(mail);
 }
@@ -183,6 +192,9 @@
 }
 .icon-user {
 	@include icon(user);
+}
+.icon-whatsapp {
+	@include icon(whatsapp);
 }
 .icon-youtube {
 	@include icon(youtube);

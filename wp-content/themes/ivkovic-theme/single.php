@@ -17,9 +17,9 @@ get_header(); ?>
 		if( !empty($image) ): ?>
 		
 			<div class="single-post-hero">
-				<img src="<?php echo $image['url']; ?>" alt="<?php echo $image['alt']; ?>" />
+				<?php echo wp_get_attachment_image( $image, 'hero_image' ); ?>
 			</div><!-- .single-post-hero -->
-
+		
 		<?php endif; ?>
 
 		<div class="single-post-main-wrapper">

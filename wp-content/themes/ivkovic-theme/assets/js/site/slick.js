@@ -23,6 +23,7 @@ module.exports = {
 		textSlider: $('.text-slider-wrapper'),
 		contactSlider: $('.contact-slider-wrapper'),
 		imageText: $('.image-text-images'),
+		relatedProducts: $('.related-products-items-inner'),
 	},
 	
 	/*-------------------------------------------------------------------------------
@@ -78,6 +79,15 @@ module.exports = {
 		this.$dom.imageText.slick({
 			slidesToScroll: 1,
 			slidesToShow: 1,
+			dots: false,
+			arrows: true,
+			prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
+			nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>",
+		});
+
+		this.$dom.relatedProducts.slick({
+			slidesToScroll: 4,
+			slidesToShow: 4,
 			dots: false,
 			arrows: true,
 			prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",

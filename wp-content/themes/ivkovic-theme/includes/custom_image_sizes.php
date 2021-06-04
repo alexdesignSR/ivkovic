@@ -10,5 +10,6 @@ add_image_size( 'post_item_wide', 1270, 495, true );
 add_image_size( 'timeline', 252, 250, true );
 add_image_size( 'image_text', 620, 620, true );
 add_image_size( 'catalogue', 400, 639, true );
+add_image_size( 'hero_image', 1920, 374, true );
 
 ?>

@@ -119,30 +119,9 @@ add_action( 'woocommerce_created_customer', 'ivkovic_save_register_fields' );
 
 // redirect after added to cart
 function bbloomer_redirect_checkout_add_cart() {
-   return home_url();
+   return get_permalink().'?added-to-cart';
 }
 add_filter( 'woocommerce_add_to_cart_redirect', 'bbloomer_redirect_checkout_add_cart' );
- 
-// add shop in breadcrumb
-add_filter( 'woocommerce_get_breadcrumb', function($crumbs, $Breadcrumb){
-    $shop_page_id = wc_get_page_id('shop'); //Get the shop page ID
-    if($shop_page_id > 0 && !is_shop()) { //Check we got an ID (shop page is set). Added check for is_shop to prevent Home / Shop / Shop as suggested in comments
-        $new_breadcrumb = [
-            _x( 'Proizvodi', 'breadcrumb', 'ivkovic' ), //Title
-            get_permalink(wc_get_page_id('shop')) // URL
-        ];
-        array_splice($crumbs, 1, 0, [$new_breadcrumb]); //Insert a new breadcrumb after the 'Home' crumb
-    }
-    return $crumbs;
-}, 10, 2 );
-
-// change breadcrumb delimiter
-function wcc_change_breadcrumb_delimiter( $defaults ) {
-	// Change the breadcrumb delimeter from '/' to '>'
-	$defaults['delimiter'] = ' &gt; ';
-	return $defaults;
-}
-add_filter( 'woocommerce_breadcrumb_defaults', 'wcc_change_breadcrumb_delimiter' );
 
 // remove sale flash on single
 remove_action( 'woocommerce_before_single_product_summary', 'woocommerce_show_product_sale_flash', 10 );
@@ -228,9 +207,34 @@ function variation_custom_buttons($html, $args) {
 
                     </div><!-- .single-product-color-vars -->
 
-                    <div class="sp-custom-color">
-                        <span class="sp-custom-color-label"><?php _e('* Dodatni izbor boja po želji kupca','ivkovic') ?></span>
-                    </div><!-- .sp-custom-color -->
+                    <?php 
+                    
+                    $custom_product_popup_text = get_field('custom_product_popup_text','option');
+                    
+                    if( $custom_product_popup_text ): ?>
+                        
+                        <div class="sp-custom-color">
+                            <span class="sp-custom-color-label"><?php _e('* Dodatni izbor boja po želji kupca','ivkovic') ?></span>
+                        </div><!-- .sp-custom-color -->
+
+                        <div class="sp-custom-color-popup">
+                            <div class="sp-custom-color-popup-inner">
+
+                                <span><?php echo $custom_product_popup_text; ?></span>
+
+                                <?php $phone = get_field('phone','option'); ?>
+
+                                <?php if( $phone ): ?>
+
+                                    <a href="<?php echo 'tel:'.str_replace(" ","",$phone); ?>"><?php echo $phone;?></a>
+
+                                <?php endif; ?>
+
+                            </div><!-- .sp-custom-color-popup-inner -->
+                        </div><!-- .sp-custom-color-popup -->
+
+                    <?php endif; ?>
+
                 </div><!-- .single-product-color-vars-wrapper -->
 
             <?php endif;
@@ -264,3 +268,122 @@ function custom_add_to_cart_text() {
 add_filter( 'woocommerce_product_single_add_to_cart_text', 'custom_add_to_cart_text' );
 add_filter( 'variable_add_to_cart_text', 'custom_add_to_cart_text' );
 add_filter( 'woocommerce_product_add_to_cart_text', 'custom_add_to_cart_text' );
+
+// remove default breadcrumbs
+remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
+
+add_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb_custom', 20 );
+
+function woocommerce_breadcrumb_custom(){
+    if (function_exists('yoast_breadcrumb')): ?>
+
+		<?php yoast_breadcrumb('
+			<div class="sp-breadcrumbs" id="breadcrumbs">', '</div>
+		'); ?>
+
+	<?php endif;
+}
+
+// add shop in breadcrumb
+function wpse_100012_override_yoast_breadcrumb_trail( $links ) {
+    global $post;
+
+    if ( is_singular( 'product' ) ) {
+
+        $cats = get_the_terms( get_the_ID(), 'product_cat' );
+
+        if( isset($cats[0]) ):
+            $breadcrumb[] = array(
+                'url' => get_term_link($cats[0]),
+                'text' => $cats[0]->name,
+            );
+    
+            array_splice( $links, 2, -2, $breadcrumb );
+        endif;
+
+    }elseif( is_cart() ){
+        $breadcrumb[] = array(
+            'url' => get_permalink(wc_get_page_id('shop')),
+            'text' => __('Proizvodi','ivkovic'),
+        );
+        
+        array_splice( $links, 1, -2, $breadcrumb );
+    }elseif( is_checkout() ){
+        $breadcrumb[] = array(
+            'url' => get_permalink(wc_get_page_id('shop')),
+            'text' => __('Proizvodi','ivkovic'),
+        );
+
+        $breadcrumb[] = array(
+            'url' => get_permalink(wc_get_page_id('cart')),
+            'text' => __('Korpa','ivkovic'),
+        );
+
+        array_splice( $links, 1, -2, $breadcrumb );
+    }
+
+    return $links;
+}
+
+add_filter( 'wpseo_breadcrumb_links', 'wpse_100012_override_yoast_breadcrumb_trail' );
+
+remove_action( 'woocommerce_cart_collaterals', 'woocommerce_cross_sell_display' );
+
+remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_meta', 40 );
+remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_sharing', 50 );
+
+add_action( 'woocommerce_single_product_summary', 'sp_share_links', 50 );
+function sp_share_links(){
+    get_template_part('template-parts/custom/social-share-links');
+}
+
+/**
+ * Add a custom product data tab
+ */
+add_filter( 'woocommerce_product_tabs', 'woo_new_product_tab' );
+function woo_new_product_tab( $tabs ) {
+	
+    $services = get_field('services');
+
+    if( $services ):
+
+        // Adds the new tab
+        $tabs['test_tab'] = array(
+            'title' 	=> __( 'Usluge', 'ivkovic' ),
+            'priority' 	=> 50,
+            'callback' 	=> 'woo_new_product_tab_content'
+        );
+                
+    endif;
+
+	return $tabs;
+
+}
+function woo_new_product_tab_content() {
+
+    $services = get_field('services');
+
+    if( $services ): ?>
+        
+        <div class="sp-services-tap entry-content">
+            <?php echo $services; ?>
+        </div><!-- .sp-services-tap -->
+        
+    <?php endif;
+	
+}
+
+remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15 );
+remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
+
+add_action( 'woocommerce_after_single_product_summary', 'sp_related_products', 20 );
+function sp_related_products(){
+    get_template_part('template-parts/custom/related-products');
+}
+
+function my_woocommerce_catalog_orderby( $orderby ) {
+    unset($orderby["popularity"]);
+    unset($orderby["date"]);
+    return $orderby;
+}
+add_filter( "woocommerce_catalog_orderby", "my_woocommerce_catalog_orderby", 20 );

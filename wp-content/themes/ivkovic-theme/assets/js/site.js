@@ -8,6 +8,7 @@ const Like = require('./site/like');
 const LoadMore = require('./site/load-more');
 const VarSelect = require('./site/variation-select');
 const ProductQty = require('./site/product-qty');
+const Share = require('./site/share-links');
 
 jQuery( function(){
 
@@ -40,5 +41,10 @@ jQuery( function(){
    * Initialize ProductQty
    */
   ProductQty.init();
+
+  /**
+   * Initialize Share
+   */
+   Share.init();
 
 });

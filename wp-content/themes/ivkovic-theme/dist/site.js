@@ -172,6 +172,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 		var LoadMore = require('./site/load-more');
 		var VarSelect = require('./site/variation-select');
 		var ProductQty = require('./site/product-qty');
+		var Share = require('./site/share-links');
 
 		jQuery(function () {
 
@@ -204,8 +205,13 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     * Initialize ProductQty
     */
 			ProductQty.init();
+
+			/**
+    * Initialize Share
+    */
+			Share.init();
 		});
-	}, { "./core/navigation": 1, "./site/like": 4, "./site/load-more": 5, "./site/product-qty": 6, "./site/slick": 7, "./site/variation-select": 8, "jquery": 9 }], 3: [function (require, module, exports) {
+	}, { "./core/navigation": 1, "./site/like": 4, "./site/load-more": 5, "./site/product-qty": 6, "./site/share-links": 7, "./site/slick": 8, "./site/variation-select": 9, "jquery": 10 }], 3: [function (require, module, exports) {
 		// "use strict";
 		var Global = module.exports = {
 
@@ -563,7 +569,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     	# Cache dom and strings
     -------------------------------------------------------------------------------*/
 				$dom: {
-					body: $('body')
+					body: $('body'),
+					bottomPrice: $('.sp-bottom-price'),
+					bottomBuy: $('.sp-bottom-buy'),
+					spAdded: $('.sp-added-to-cart.product')
 				},
 
 				vars: {},
@@ -573,12 +582,30 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     -------------------------------------------------------------------------------*/
 				init: function init() {
 					_this.bind();
+
+					if (_this.$dom.spAdded.length) {
+						var selectedColor = _this.$dom.spAdded.data('selected-color');
+
+						if (selectedColor) {
+							$('.single-product-color-var[data-value="' + selectedColor + '"]').show();
+						}
+					}
 				},
 
 				bind: function bind() {
 					// increse qty
 					_this.$dom.body.on('click', '.qty-minus', _this.decreseQty);
 					_this.$dom.body.on('click', '.qty-plus', _this.increseQty);
+					_this.$dom.body.on('click', '.ap-load-more', _this.loadMore);
+
+					_this.$dom.bottomBuy.on('click', _this.buy);
+
+					_this.$dom.body.on("show_variation", function (event, variation) {
+						setTimeout(function () {
+							var priceHTML = $('.product .price').html();
+							_this.$dom.bottomPrice.html(priceHTML);
+						}, 500);
+					});
 				},
 
 				increseQty: function increseQty() {
@@ -593,11 +620,100 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					if (val > 1) {
 						$(this).parent().siblings('input').val(val - 1).trigger('change');
 					}
+				},
+
+				buy: function buy() {
+					$('.single_add_to_cart_button').trigger('click');
+				},
+
+				loadMore: function loadMore() {
+					var thisEl = $(this);
+					var found = thisEl.data('found');
+					var ppp = thisEl.data('ppp');
+
+					$('select[name="_sf_ppp[]"] option:nth-child(2)').val(ppp);
+
+					$('select[name="_sf_ppp[]"]').val(ppp).trigger('change');
 				}
 
 			};
 		})(jQuery);
 	}, {}], 7: [function (require, module, exports) {
+		(function ($) {
+			"use strict";
+
+			var Global = require('./global');
+
+			var _this = module.exports = {
+
+				/*-------------------------------------------------------------------------------
+    	# Cache dom and strings
+    -------------------------------------------------------------------------------*/
+				$dom: {
+					body: $('body'),
+					shareButtonsPopup: $(".social-share-links a:not(.no-popup)"),
+					shareLinksWrapper: $('.social-share-links'),
+					shareLinksOuterWrapper: $('.share-links-wrap')
+				},
+
+				vars: {},
+
+				/*-------------------------------------------------------------------------------
+    	# Initialize
+    -------------------------------------------------------------------------------*/
+				init: function init() {
+
+					_this.$dom.shareButtonsPopup.on('click', function (e) {
+						e.preventDefault();
+						_this.popupCenter($(this).attr('href'), $(this).attr('title'), 500, 300);
+					});
+
+					// Global.$dom.window.on( 'load scroll', _this.checkPositionOfSharelinks );
+				},
+
+				popupCenter: function popupCenter(url, title, w, h) {
+					// Fixes dual-screen position                         Most browsers      Firefox
+					var dualScreenLeft = window.screenLeft !== undefined ? window.screenLeft : screen.left;
+					var dualScreenTop = window.screenTop !== undefined ? window.screenTop : screen.top;
+
+					var width = window.innerWidth ? window.innerWidth : document.documentElement.clientWidth ? document.documentElement.clientWidth : screen.width;
+					var height = window.innerHeight ? window.innerHeight : document.documentElement.clientHeight ? document.documentElement.clientHeight : screen.height;
+
+					var left = width / 2 - w / 2 + dualScreenLeft;
+					var top = height / 2 - h / 2 + dualScreenTop;
+					var newWindow = window.open(url, title, 'scrollbars=yes, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
+
+					// Puts focus on the newWindow
+					if (window.focus) {
+						newWindow.focus();
+					}
+				},
+
+				checkPositionOfSharelinks: function checkPositionOfSharelinks() {
+
+					if (_this.$dom.shareLinksOuterWrapper.length && Global.$dom.window.width() >= 1200) {
+						var elemToScrollTopPos = _this.$dom.shareLinksOuterWrapper.offset().top - 200;
+						var windowHalfHeight = Global.$dom.window.innerHeight();
+						var elemToScrollBottPos = _this.$dom.shareLinksOuterWrapper.offset().top + _this.$dom.shareLinksOuterWrapper.innerHeight() - windowHalfHeight;
+						var elemePositionBottom = windowHalfHeight - 200 - _this.$dom.shareLinksWrapper.innerHeight();
+
+						if (Global.$dom.window.scrollTop() > elemToScrollTopPos && Global.$dom.window.scrollTop() < elemToScrollBottPos) {
+
+							_this.$dom.shareLinksWrapper.addClass('fixed').css('top', '200px');
+							_this.$dom.shareLinksWrapper.removeClass('fixed-bottom').css('bottom', 'inherit');
+						} else if (Global.$dom.window.scrollTop() > elemToScrollBottPos) {
+							_this.$dom.shareLinksWrapper.removeClass('fixed').css('top', 'inherit');
+							_this.$dom.shareLinksWrapper.addClass('fixed-bottom').css('bottom', elemePositionBottom);
+						} else {
+							_this.$dom.shareLinksWrapper.removeClass('fixed').css('top', 'inherit');
+							_this.$dom.shareLinksWrapper.removeClass('fixed-bottom').css('bottom', 'inherit');
+						}
+					}
+				}
+
+			};
+		})(jQuery);
+	}, { "./global": 3 }], 8: [function (require, module, exports) {
 		"use strict";
 
 		/**  
@@ -622,7 +738,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				testimonials: $('.tst-items'),
 				textSlider: $('.text-slider-wrapper'),
 				contactSlider: $('.contact-slider-wrapper'),
-				imageText: $('.image-text-images')
+				imageText: $('.image-text-images'),
+				relatedProducts: $('.related-products-items-inner')
 			},
 
 			/*-------------------------------------------------------------------------------
@@ -683,9 +800,18 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 					prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
 					nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>"
 				});
+
+				this.$dom.relatedProducts.slick({
+					slidesToScroll: 4,
+					slidesToShow: 4,
+					dots: false,
+					arrows: true,
+					prevArrow: "<span class='slick-prev pull-left'><i class='icon-angle-left'></i></span>",
+					nextArrow: "<span class='slick-next pull-right'><i class='icon-angle-right'></i></span>"
+				});
 			}
 		};
-	}, { "slick-carousel": 10 }], 8: [function (require, module, exports) {
+	}, { "slick-carousel": 11 }], 9: [function (require, module, exports) {
 		(function ($) {
 			"use strict";
 
@@ -743,7 +869,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			};
 		})(jQuery);
-	}, {}], 9: [function (require, module, exports) {
+	}, {}], 10: [function (require, module, exports) {
 		/*!
    * jQuery JavaScript Library v3.4.1
    * https://jquery.com/
@@ -10878,7 +11004,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 			return jQuery;
 		});
-	}, {}], 10: [function (require, module, exports) {
+	}, {}], 11: [function (require, module, exports) {
 		/*
        _ _      _       _
    ___| (_) ___| | __  (_)___
@@ -13632,4 +13758,4 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 				return _;
 			};
 		});
-	}, { "jquery": 9 }] }, {}, [2]);
+	}, { "jquery": 10 }] }, {}, [2]);
